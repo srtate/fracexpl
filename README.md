@@ -18,7 +18,9 @@ To include the fractal explorer in a web page, you must do two things:
 
 1. Include the JavaScript source in the `head` section of your web
 page, and include a copy of Bootstrap CSS (required for button styling
-and a few other visual elements).
+and a few other visual elements). You must have the button images
+(`button1.png` through `button6.png`) in the same directory as the
+JavaScript source.
 
 2. Include an empty `div` with `class=fractaltool`, which can take
 some optional `data` properties:
