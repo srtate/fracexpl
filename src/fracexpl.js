@@ -996,8 +996,8 @@ SeedEditor.StdSeeds = {
                [280.0,38.0,0],[200.0,158.0,5],[500.0,138.0,0],
                [200.0,158.0,5],[340.0,278.0,0],[500.0,138.0,5]]
     },
-    "fractalsprials": {
-        fullname: "fractalsprials",
+    "fractalspirals": {
+        fullname: "fractalspirals",
         thickness: 2.0,
         thicknessType: 0,
         itNumber: 9,
