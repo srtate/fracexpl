@@ -27,24 +27,24 @@ function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
   this.seed = seed;
 
   this.canvas = document.createElement("canvas");
-  this.canvas.id = "ft-drawing-canvas-"+toolNum;
+  this.canvas.id = "ft-drawing-canvas-" + toolNum;
   this.canvas.width = Math.max(640, askWidth);
   this.canvas.height = Math.max(320, askHeight);
   this.canvas.style.cssText = "border:1px solid black; position:absolute; left:0; top:0; z-index: 1;";
   this.ctx = this.canvas.getContext("2d");
 
   this.ctrlPanel = document.createElement("div");
-  this.ctrlPanel.id = "ft-drawing-ctrls-"+toolNum;
+  this.ctrlPanel.id = "ft-drawing-ctrls-" + toolNum;
   this.ctrlPanel.style.display = "block";
 
   this.levelButtons = document.createElement("div");
   for (i=1; i<=8; i++) {
-    var button = document.createElement("button");
+    let button = document.createElement("button");
     button.className="btn btn-secondary btn-sm";
     button.style.marginLeft = "4px";
     button.addEventListener("click", function(inum) {
       this.drawIt(inum); }.bind(this,i));
-    button.innerHTML = "Iter "+i;
+    button.innerHTML = "Iter " + i;
     this.levelButtons.appendChild(button);
   }
   this.currLevels = levels;
@@ -52,7 +52,7 @@ function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
 
   panelRow = document.createElement("div");
   panelRow.style.marginTop = "10px";
-  var thickLabel = document.createElement("span");
+  let thickLabel = document.createElement("span");
   thickLabel.style.marginLeft = "4px";
   thickLabel.innerHTML = "Line Thickness: ";
   panelRow.appendChild(thickLabel);
@@ -78,17 +78,17 @@ function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
 }
 
 FractalDraw.prototype.checkDim = function(dim) {
-  var seed = this.seed;
+  let seed = this.seed;
   if (seed.length < 2) return -1.0;
-  var baseline = Math.sqrt((seed[seed.length-1][0]-seed[0][0])**2+
+  let baseline = Math.sqrt((seed[seed.length-1][0]-seed[0][0])**2 +
                            (seed[seed.length-1][1]-seed[0][1])**2);
   if (baseline < 1.0) return -1.0;
 
-  var lenSum = 0.0;
-  for (var i=1; i<seed.length; i++) {
-    var segLen = Math.sqrt((seed[i][0]-seed[i-1][0])**2+
+  let lenSum = 0.0;
+  for (let i=1; i<seed.length; i++) {
+    let segLen = Math.sqrt((seed[i][0]-seed[i-1][0])**2 +
                            (seed[i][1]-seed[i-1][1])**2);
-    var linScale = segLen/baseline;
+    let linScale = segLen/baseline;
     if (seed[i][2] < 4)
       lenSum += linScale**dim;
   }
@@ -97,17 +97,17 @@ FractalDraw.prototype.checkDim = function(dim) {
 };
 
 FractalDraw.prototype.getDim = function() {
-  var seed = this.seed;
-  var replSum = 0.0;
-  var nonrepl = 0.0;
-  var baseline = Math.sqrt((seed[seed.length-1][0]-seed[0][0])**2+
+  let seed = this.seed;
+  let replSum = 0.0;
+  let nonrepl = 0.0;
+  let baseline = Math.sqrt((seed[seed.length-1][0]-seed[0][0])**2 +
                            (seed[seed.length-1][1]-seed[0][1])**2);
   if (baseline < 1.0) return -1.0;
 
-  for (var i=1; i<seed.length; i++) {
-    var segLen = Math.sqrt((seed[i][0]-seed[i-1][0])**2+
+  for (let i=1; i<seed.length; i++) {
+    let segLen = Math.sqrt((seed[i][0]-seed[i-1][0])**2 +
                            (seed[i][1]-seed[i-1][1])**2);
-    var linScale = segLen/baseline;
+    let linScale = segLen/baseline;
     if (seed[i][2] < 4)
       replSum += linScale;
     else if (seed[i][2] == 4)
@@ -124,15 +124,15 @@ FractalDraw.prototype.getDim = function() {
   if ((nonrepl == 0.0) && (replSum == 0.0))
     return 0.0;
 
-  var lo = 0.0;
-  var hi = 2.0;
-  var tmp = this.checkDim(lo);
+  let lo = 0.0;
+  let hi = 2.0;
+  let tmp = this.checkDim(lo);
   if (tmp < 1.0) return -1.0;
   tmp = this.checkDim(hi);
   if ((tmp == -1.0) || (tmp > 1.0)) return -1.0;
 
   while ((hi-lo) > 0.0005) {
-    var mid = (lo+hi)/2;
+    let mid = (lo+hi)/2;
     tmp = this.checkDim(mid);
     if (tmp >= 1.0) lo = mid;
     else hi = mid;
@@ -151,7 +151,7 @@ FractalDraw.prototype.setDrawWidth = function(width) {
 
 FractalDraw.prototype.cloneSeed = function() {
   copy = [];
-  for (var i=0; i<this.seed.length; i++)
+  for (let i=0; i<this.seed.length; i++)
     copy.push(this.seed[i].slice());
   this.seed = copy;
 };
@@ -181,49 +181,49 @@ FractalDraw.prototype.changeSeedPt = function (ptNum, newPoint) {
 
 FractalDraw.prototype.closestPt = function(pt) {
   if (this.seed.length < 1) return -1;
-  var cl_idx = 0;
-  var cl_distsq = sqr(pt[0]-this.seed[0][0])+sqr(pt[1]-this.seed[0][1]);
-  for (var i=1; i<this.seed.length; i++) {
-    var distsq = sqr(pt[0]-this.seed[i][0])+sqr(pt[1]-this.seed[i][1]);
-    if (distsq < cl_distsq) {
-      cl_idx = i;
-      cl_distsq = distsq;
+  let clIdx = 0;
+  let clDistSq = sqr(pt[0]-this.seed[0][0]) + sqr(pt[1]-this.seed[0][1]);
+  for (let i=1; i<this.seed.length; i++) {
+    let distsq = sqr(pt[0]-this.seed[i][0]) + sqr(pt[1]-this.seed[i][1]);
+    if (distsq < clDistSq) {
+      clIdx = i;
+      clDistSq = distsq;
     }
   }
 
   // Tolerance: Must be within 10 pixels...
-  if (cl_distsq <= 100.0)
-    return cl_idx;
+  if (clDistSq <= 100.0)
+    return clIdx;
   else
     return -1;
 };
 
 function ptlsdist2(pt, e1, e2) {
   if ((e1[0]==e2[0]) && (e1[1] == e2[1]))
-    return sqr(pt[0]-e1[0])+(pt[1]-e1[1]);  // shouldn't happen?
-  var seglen = sqr(e1[0]-e2[0])+sqr(e1[1]-e2[1]);
-  var t = ((pt[0]-e1[0])*(e2[0]-e1[0]) + (pt[1]-e1[1])*(e2[1]-e1[1]))/seglen;
+    return sqr(pt[0]-e1[0]) + (pt[1]-e1[1]);  // shouldn't happen?
+  let seglen = sqr(e1[0]-e2[0]) + sqr(e1[1]-e2[1]);
+  let t = ((pt[0]-e1[0])*(e2[0]-e1[0]) + (pt[1]-e1[1])*(e2[1]-e1[1]))/seglen;
   t = Math.max(0, Math.min(1, t)); // constrain to 0<=t<=1 (on segment)
-  var lx = e1[0] + t*(e2[0]-e1[0]);
-  var ly = e1[1] + t*(e2[1]-e1[1]);
-  return sqr(pt[0]-lx)+sqr(pt[1]-ly);
+  let lx = e1[0] + t*(e2[0]-e1[0]);
+  let ly = e1[1] + t*(e2[1]-e1[1]);
+  return sqr(pt[0]-lx) + sqr(pt[1]-ly);
 };
 
 FractalDraw.prototype.closestLn = function(pt) {
   if (this.seed.length < 1) return -1;
-  var cl_idx = 0;
-  var cl_distsq = ptlsdist2(pt, this.seed[0], this.seed[1]);
-  for (var i=1; i<this.seed.length-1; i++) {
-    var distsq = ptlsdist2(pt, this.seed[i], this.seed[i+1]);
-    if (distsq < cl_distsq) {
-      cl_idx = i;
-      cl_distsq = distsq;
+  let clIdx = 0;
+  let clDistSq = ptlsdist2(pt, this.seed[0], this.seed[1]);
+  for (let i=1; i<this.seed.length-1; i++) {
+    let distsq = ptlsdist2(pt, this.seed[i], this.seed[i+1]);
+    if (distsq < clDistSq) {
+      clIdx = i;
+      clDistSq = distsq;
     }
   }
 
   // Tolerance: Must be within 5 pixels...
-  if (cl_distsq <= 25.0)
-    return cl_idx;
+  if (clDistSq <= 25.0)
+    return clIdx;
   else
     return -1;
 };
@@ -256,7 +256,7 @@ FractalDraw.prototype.getCtrls = function() {
 FractalDraw.prototype.enableMode = function() {
   this.ctrlPanel.style.display = "inline-block";
   this.drawIt(this.currLevels);
-  var dim = Math.round(this.getDim()*1000.0)/1000.0;
+  let dim = Math.round(this.getDim()*1000.0)/1000.0;
   if (dim == -1) {
     this.dimInfo.innerHTML = "Dim=?";
   } else {
@@ -271,7 +271,7 @@ FractalDraw.prototype.disableMode = function() {
 FractalDraw.prototype.drawSeed = function(drawBaseLine=false, without = -1) {
   this.clear();
   if (this.seed.length > 1) {
-    for (var i=1; i<this.seed.length; i++) {
+    for (let i=1; i<this.seed.length; i++) {
       if ((i-1 != without) && (i != without)) {
         this.ctx.beginPath();
         this.ctx.lineWidth = SeedEditor.SegType[this.seed[i][2]].width;
@@ -297,30 +297,30 @@ FractalDraw.prototype.drawSeed = function(drawBaseLine=false, without = -1) {
 
 FractalDraw.prototype.basedraw = function(start, end, hflip, level) {
   if (this.seed.length < 2) return;
-  var dx = this.seed[this.seed.length-1][0]-this.seed[0][0];
-  var dy = this.seed[this.seed.length-1][1]-this.seed[0][1];
-  var d = dx*dx + dy*dy;
-  var dx1 = end[0]-start[0];
-  var dy1 = end[1]-start[1];
-  if (dx1*dx1+dy1*dy1 < 1.0) {
+  let dx = this.seed[this.seed.length-1][0]-this.seed[0][0];
+  let dy = this.seed[this.seed.length-1][1]-this.seed[0][1];
+  let blLen = dx*dx + dy*dy;
+  let dx1 = end[0]-start[0];
+  let dy1 = end[1]-start[1];
+  if (dx1*dx1 + dy1*dy1 < 1.0) {
     this.ctx.beginPath();
     this.ctx.moveTo(start[0],start[1]);
     this.ctx.lineTo(end[0],end[1]);
     this.ctx.stroke();
     return;
   }
-  var a = (dx*dx1 + hflip*dy*dy1)/d;
-  var b = (dx1*dy - hflip*dx*dy1)/d;
-  var tx = start[0] - a*this.seed[0][0] - b*this.seed[0][1];
-  var c = (dx*dy1 - hflip*dy*dx1)/d;
-  var d = (dy1*dy + hflip*dx*dx1)/d;
-  var ty = start[1] - c*this.seed[0][0] - d*this.seed[0][1];
-  var xx = a*this.seed[0][0]+b*this.seed[0][1]+tx;
-  var yy = c*this.seed[0][0]+d*this.seed[0][1]+ty;
+  let a = (dx*dx1 + hflip*dy*dy1)/blLen;
+  let b = (dx1*dy - hflip*dx*dy1)/blLen;
+  let tx = start[0] - a*this.seed[0][0] - b*this.seed[0][1];
+  let c = (dx*dy1 - hflip*dy*dx1)/blLen;
+  let d = (dy1*dy + hflip*dx*dx1)/blLen;
+  let ty = start[1] - c*this.seed[0][0] - d*this.seed[0][1];
+  let xx = a*this.seed[0][0] + b*this.seed[0][1] + tx;
+  let yy = c*this.seed[0][0] + d*this.seed[0][1] + ty;
 
-  for (var i = 1; i<this.seed.length; i++) {
-    var xn = a*this.seed[i][0]+b*this.seed[i][1]+tx;
-    var yn = c*this.seed[i][0]+d*this.seed[i][1]+ty;
+  for (let i = 1; i<this.seed.length; i++) {
+    let xn = a*this.seed[i][0] + b*this.seed[i][1] + tx;
+    let yn = c*this.seed[i][0] + d*this.seed[i][1] + ty;
     if (this.seed[i][2] != 5) {
       if ((level == 1) || (this.seed[i][2] == 4)) {
         this.ctx.beginPath();
@@ -345,8 +345,8 @@ FractalDraw.prototype.basedraw = function(start, end, hflip, level) {
 
 function SeedEditor (fractalDraw, enabled) {
   this.fractalDraw = fractalDraw;
-  var drawingcanvas = fractalDraw.getCanvas();
-  var drawingz = parseInt(drawingcanvas.style["z-index"]);
+  let drawingcanvas = fractalDraw.getCanvas();
+  let drawingz = parseInt(drawingcanvas.style["z-index"]);
   drawingcanvas.style["z-index"] = drawingz+1;
 
   this.bgcanvas = document.createElement("canvas");
@@ -393,15 +393,15 @@ function SeedEditor (fractalDraw, enabled) {
   this.ctrlPanel.id = "scoobydoo";
   this.ctrlPanel.style.display = "block";
 
-  var panelTbl = document.createElement("table");
-  var panelRow = document.createElement("tr");
+  let panelTbl = document.createElement("table");
+  let panelRow = document.createElement("tr");
   panelTbl.appendChild(panelRow);
 
-  var panelTD = document.createElement("td");
+  let panelTD = document.createElement("td");
   this.currentSegType = -1;
   this.segTypeBtn = [];
-  for (var i=0; i<SeedEditor.SegType.length; i++) {
-    var typeBtn = document.createElement("button");
+  for (let i=0; i<SeedEditor.SegType.length; i++) {
+    let typeBtn = document.createElement("button");
     //  typeBtn.innerHTML = SeedEditor.SegType[i].name;
     typeBtn.innerHTML = "<img src='button"+(i+1)+".png' />";
     typeBtn.className = "btn btn-secondary btn-sm";
@@ -420,7 +420,7 @@ function SeedEditor (fractalDraw, enabled) {
 
   this.stdSeeds = [];
   this.stdSeedWidth = [];
-  var pickerLabel = document.createElement("span");
+  let pickerLabel = document.createElement("span");
   pickerLabel.innerHTML = "Seed: ";
   panelTD.appendChild(pickerLabel);
   this.picker = document.createElement("select");
@@ -448,7 +448,7 @@ function SeedEditor (fractalDraw, enabled) {
   this.snapBox.style.marginLeft = "8px";
   panelTD.appendChild(this.snapBox);
 
-  var snapBoxLabel = document.createElement("span");
+  let snapBoxLabel = document.createElement("span");
   snapBoxLabel.innerHTML = "Snap to grid";
   panelTD.appendChild(snapBoxLabel);
 
@@ -460,7 +460,7 @@ function SeedEditor (fractalDraw, enabled) {
 }
 
 SeedEditor.prototype.addSeed = function(name, longname, seed, width) {
-  var option = document.createElement("option");
+  let option = document.createElement("option");
   option.value = name;
   option.dataset["name"] = name;
   option.innerHTML = longname;
@@ -470,24 +470,24 @@ SeedEditor.prototype.addSeed = function(name, longname, seed, width) {
 };
 
 SeedEditor.prototype.addStdSeed = function(name) {
-  var seedInfo = SeedEditor.StdSeeds[name];
+  let seedInfo = SeedEditor.StdSeeds[name];
   if (seedInfo != undefined) {
     // Adjust to JS canvas coordinates - do we need this?
-    var adjSeed = [];
-    for (var i=0; i<seedInfo.seed.length; i++) {
+    let adjSeed = [];
+    for (let i=0; i<seedInfo.seed.length; i++) {
       adjSeed.push([seedInfo.seed[i][0]+0.5,seedInfo.seed[i][1]+0.5,
                     seedInfo.seed[i][2]]);
     }
     // Nudging thickness here, because I like the narrower lines...
-    var thickness = Math.max(seedInfo.thickness-1,1);
+    let thickness = Math.max(seedInfo.thickness-1,1);
     this.addSeed(name, seedInfo.fullname, adjSeed, thickness);
   }
 };
 
 SeedEditor.prototype.setSeedByName = function(seedName) {
-  var findName = seedName.toLowerCase();
-  var seeds = this.picker.children;
-  for (var i=0; i<seeds.length; i++) {
+  let findName = seedName.toLowerCase();
+  let seeds = this.picker.children;
+  for (let i=0; i<seeds.length; i++) {
     if (findName == seeds[i].dataset["name"]) {
       this.picker.selectedIndex = i;
       this.pickSeed();
@@ -572,12 +572,12 @@ SeedEditor.EDITMODE = {
 };
 
 SeedEditor.prototype.setupBackground = function() {
-  var bgctx = this.bgcanvas.getContext("2d");
+  let bgctx = this.bgcanvas.getContext("2d");
   bgctx.strokeStyle = "#a0a0a0";
   bgctx.lineWidth = 1;
   // center is (20.5,20.5) - go 18-23
-  for (var x = 1; x < Math.floor(this.bgcanvas.width/20); x++) {
-    for (var y = 1; y < Math.floor(this.bgcanvas.height/20); y++) {
+  for (let x = 1; x < Math.floor(this.bgcanvas.width/20); x++) {
+    for (let y = 1; y < Math.floor(this.bgcanvas.height/20); y++) {
       bgctx.beginPath();
       bgctx.moveTo(x*20-2,y*20+0.5);
       bgctx.lineTo(x*20+3,y*20+0.5);
@@ -678,7 +678,7 @@ SeedEditor.prototype.mouseMove = function(evt) {
 };
 
 SeedEditor.prototype.mouseClick = function (evt) {
-  var seed = this.fractalDraw.seed; // Better way to do this?
+  let seed = this.fractalDraw.seed; // Better way to do this?
   this.getMousePos(evt);
   if (this.editMode == SeedEditor.EDITMODE.DEFINING) {
     this.fractalDraw.addToSeed([this.mouseX,this.mouseY,this.currentSegType]);
@@ -696,24 +696,24 @@ SeedEditor.prototype.mouseClick = function (evt) {
       this.setMode(SeedEditor.EDITMODE.DONE);
     }
 
-    var closest_pt = this.fractalDraw.closestPt([this.rawX,this.rawY]);
-    if (closest_pt >= 0) {
-      if (closest_pt == 0) {
+    let closestPt = this.fractalDraw.closestPt([this.rawX,this.rawY]);
+    if (closestPt >= 0) {
+      if (closestPt == 0) {
         this.anchor1 = [seed[1][0],seed[1][1],seed[1][2]];
       } else {
-        this.anchor1 = [seed[closest_pt-1][0],seed[closest_pt-1][1],seed[closest_pt][2]];
-        if (closest_pt < seed.length-1)
-          this.anchor2 = [seed[closest_pt+1][0],seed[closest_pt+1][1],seed[closest_pt+1][2]];
+        this.anchor1 = [seed[closestPt-1][0],seed[closestPt-1][1],seed[closestPt][2]];
+        if (closestPt < seed.length-1)
+          this.anchor2 = [seed[closestPt+1][0],seed[closestPt+1][1],seed[closestPt+1][2]];
       }
-      this.movePt = closest_pt;
+      this.movePt = closestPt;
       this.fractalDraw.drawSeed(false,this.movePt);
       this.gridhighlight = [this.mouseX,this.mouseY];
       this.drawWork();
       this.setMode(SeedEditor.EDITMODE.MOVEPT);
     } else {
-      var closest_ln = this.fractalDraw.closestLn([this.rawX,this.rawY]);
-      if (closest_ln >= 0) {
-        seed[closest_ln+1][2] = this.currentSegType;
+      let closestLn = this.fractalDraw.closestLn([this.rawX,this.rawY]);
+      if (closestLn >= 0) {
+        seed[closestLn+1][2] = this.currentSegType;
         this.fractalDraw.drawSeed(true);
       }
     }
@@ -732,7 +732,7 @@ SeedEditor.prototype.mouseClick = function (evt) {
 };
 
 SeedEditor.prototype.keyPress = function (evt) {
-  var charCode = evt.keyCode || evt.which;
+  let charCode = evt.keyCode || evt.which;
   if ((charCode == 46) || (charCode == 8)) {
     // Delete (or backspace)
     if ((this.editMode == SeedEditor.EDITMODE.MOVEPT) && (this.fractalDraw.seed.length > 2)) {
@@ -757,16 +757,16 @@ SeedEditor.prototype.mouseDblClick = function (evt) {
     this.anchor1 = this.anchor2 = null;
     this.setMode(SeedEditor.EDITMODE.DONE);
   } else if (this.editMode == SeedEditor.EDITMODE.DONE) {
-    var closest_pt = this.fractalDraw.closestPt([this.rawX,this.rawY]);
-    var closest_ln = this.fractalDraw.closestLn([this.rawX,this.rawY]);
-    var seed = this.fractalDraw.seed;
-    if ((closest_pt == -1) && (closest_ln >= 0)) {
-      this.fractalDraw.insertInSeed([this.mouseX,this.mouseY,seed[closest_ln+1][2]], closest_ln+1);
+    let closestPt = this.fractalDraw.closestPt([this.rawX,this.rawY]);
+    let closestLn = this.fractalDraw.closestLn([this.rawX,this.rawY]);
+    let seed = this.fractalDraw.seed;
+    if ((closestPt == -1) && (closestLn >= 0)) {
+      this.fractalDraw.insertInSeed([this.mouseX,this.mouseY,seed[closestLn+1][2]], closestLn+1);
 
-      this.anchor1 = seed[closest_ln].slice();
-      this.anchor2 = seed[closest_ln+2].slice();
+      this.anchor1 = seed[closestLn].slice();
+      this.anchor2 = seed[closestLn+2].slice();
       this.anchor1[2] = this.anchor2[2];
-      this.movePt = closest_ln+1;
+      this.movePt = closestLn+1;
       this.fractalDraw.drawSeed(false,this.movePt);
       this.gridhighlight = [this.mouseX,this.mouseY];
       this.drawWork();
@@ -1280,7 +1280,7 @@ function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
   this.ctrlPanelDiv.style.display = "inline";
   mainDiv.appendChild(this.ctrlPanelDiv);
 
-  var levels = 1;
+  let levels = 1;
   if (mainDiv.dataset["levels"] != undefined) {
     levels = mainDiv.dataset["levels"];
   }
@@ -1294,18 +1294,18 @@ function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
   this.addMode("Edit Mode", this.editorDiv);
   this.editorDiv.disableMode();
 
-  var seedlist = "koch,sprout,tree";
+  let seedlist = "koch,sprout,tree";
   if (mainDiv.dataset["seedlist"] != undefined)
     seedlist = mainDiv.dataset["seedlist"];
-  var stdseeds = seedlist.split(",");
-  for (var i=0; i<stdseeds.length; i++)
+  let stdseeds = seedlist.split(",");
+  for (let i=0; i<stdseeds.length; i++)
     this.editorDiv.addStdSeed(stdseeds[i]);
 
   if (mainDiv.dataset["seed"] != undefined) {
     this.editorDiv.setSeedByName(mainDiv.dataset["seed"]);
   }
 
-  var mode = 1;
+  let mode = 1;
   if ((mainDiv.dataset["mode"] != undefined) &&
       (mainDiv.dataset["mode"].toLowerCase() == "draw")) {
     mode = 0;
@@ -1315,7 +1315,7 @@ function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
 }
 
 MultiModeTool.prototype.addMode = function(title, modeObj) {
-  var button = document.createElement("button");
+  let button = document.createElement("button");
   button.innerHTML = title;
   button.className = "btn btn-secondary btn-sm";
   button.style.marginLeft = "4px";
@@ -1340,17 +1340,17 @@ MultiModeTool.prototype.setMode = function(modeNum) {
   }
 };
 
-var fractaltool_instances = null;
+let fractaltoolInstances = null;
 
-function fractaltool_init() {
-  var tools = document.getElementsByClassName("fractaltool");
-  fractaltool_instances = [];
-  for (var i=0; i<tools.length; i++) {
-    fractaltool_instances[i] = new MultiModeTool(tools[i], i+1, 800, 600);
+function fractalToolInit() {
+  let tools = document.getElementsByClassName("fractaltool");
+  fractaltoolInstances = [];
+  for (let i=0; i<tools.length; i++) {
+    fractaltoolInstances[i] = new MultiModeTool(tools[i], i+1, 800, 600);
   }
 }
 
-window.addEventListener("load", function (evt) { fractaltool_init(); });
+window.addEventListener("load", function (evt) { fractalToolInit(); });
 
 // Local Variables:
 // mode: js
