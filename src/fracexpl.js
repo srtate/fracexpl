@@ -44,7 +44,8 @@ function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
     button.className='btn btn-secondary btn-sm';
     button.style.marginLeft = '4px';
     button.addEventListener('click', function(inum) {
-      this.drawIt(inum); }.bind(this,i));
+      this.drawIt(inum);
+    }.bind(this,i));
     button.innerHTML = 'Iter ' + i;
     this.levelButtons.appendChild(button);
   }
@@ -66,7 +67,8 @@ function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
     if (this.drawThickness.value < 1.0) {
       this.drawThickness.value = 1.0;
     }
-    this.drawIt(this.currLevels); }.bind(this));
+    this.drawIt(this.currLevels);
+  }.bind(this));
   panelRow.appendChild(this.drawThickness);
   this.dimInfo = document.createElement('span');
   this.dimInfo.style.marginLeft = '20px';
@@ -81,17 +83,18 @@ function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
 FractalDraw.prototype.checkDim = function(dim) {
   let seed = this.seed;
   if (seed.length < 2) return -1.0;
-  let baseline = Math.sqrt((seed[seed.length-1][0]-seed[0][0])**2 +
-                           (seed[seed.length-1][1]-seed[0][1])**2);
+  let baseline = Math.sqrt((seed[seed.length-1][0] - seed[0][0])**2 +
+                           (seed[seed.length-1][1] - seed[0][1])**2);
   if (baseline < 1.0) return -1.0;
 
   let lenSum = 0.0;
   for (let i=1; i<seed.length; i++) {
-    let segLen = Math.sqrt((seed[i][0]-seed[i-1][0])**2 +
-                           (seed[i][1]-seed[i-1][1])**2);
+    let segLen = Math.sqrt((seed[i][0] - seed[i-1][0])**2 +
+                           (seed[i][1] - seed[i-1][1])**2);
     let linScale = segLen/baseline;
-    if (seed[i][2] < 4)
+    if (seed[i][2] < 4) {
       lenSum += linScale**dim;
+    }
   }
 
   return lenSum;
@@ -101,42 +104,47 @@ FractalDraw.prototype.getDim = function() {
   let seed = this.seed;
   let replSum = 0.0;
   let nonrepl = 0.0;
-  let baseline = Math.sqrt((seed[seed.length-1][0]-seed[0][0])**2 +
-                           (seed[seed.length-1][1]-seed[0][1])**2);
+  let baseline = Math.sqrt((seed[seed.length-1][0] - seed[0][0])**2 +
+                           (seed[seed.length-1][1] - seed[0][1])**2);
   if (baseline < 1.0) return -1.0;
 
   for (let i=1; i<seed.length; i++) {
-    let segLen = Math.sqrt((seed[i][0]-seed[i-1][0])**2 +
-                           (seed[i][1]-seed[i-1][1])**2);
+    let segLen = Math.sqrt((seed[i][0] - seed[i-1][0])**2 +
+                           (seed[i][1] - seed[i-1][1])**2);
     let linScale = segLen/baseline;
-    if (seed[i][2] < 4)
+    if (seed[i][2] < 4) {
       replSum += linScale;
-    else if (seed[i][2] == 4)
+    } else if (seed[i][2] == 4) {
       nonrepl += linScale;   // Visible but non-replicating
+    }
   }
 
   if (nonrepl > 0.0) {
-    if (replSum < 1.0)
+    if (replSum < 1.0) {
       return 1.0;
-    else
+    } else {
       return -1.0;
+    }
   }
 
-  if ((nonrepl == 0.0) && (replSum == 0.0))
-    return 0.0;
+  if ((nonrepl == 0.0) && (replSum == 0.0)) return 0.0;
 
   let lo = 0.0;
   let hi = 2.0;
   let tmp = this.checkDim(lo);
   if (tmp < 1.0) return -1.0;
+
   tmp = this.checkDim(hi);
   if ((tmp == -1.0) || (tmp > 1.0)) return -1.0;
 
   while ((hi-lo) > 0.0005) {
     let mid = (lo+hi)/2;
     tmp = this.checkDim(mid);
-    if (tmp >= 1.0) lo = mid;
-    else hi = mid;
+    if (tmp >= 1.0) {
+      lo = mid;
+    } else {
+      hi = mid;
+    }
   }
 
   return (lo+hi)/2;
@@ -182,6 +190,7 @@ FractalDraw.prototype.changeSeedPt = function(ptNum, newPoint) {
 
 FractalDraw.prototype.closestPt = function(pt) {
   if (this.seed.length < 1) return -1;
+
   let clIdx = 0;
   let clDistSq = sqr(pt[0]-this.seed[0][0]) + sqr(pt[1]-this.seed[0][1]);
   for (let i=1; i<this.seed.length; i++) {
@@ -193,15 +202,17 @@ FractalDraw.prototype.closestPt = function(pt) {
   }
 
   // Tolerance: Must be within 10 pixels...
-  if (clDistSq <= 100.0)
+  if (clDistSq <= 100.0) {
     return clIdx;
-  else
+  } else {
     return -1;
+  }
 };
 
 function ptlsdist2(pt, e1, e2) {
-  if ((e1[0]==e2[0]) && (e1[1] == e2[1]))
+  if ((e1[0]==e2[0]) && (e1[1] == e2[1])) {
     return sqr(pt[0]-e1[0]) + (pt[1]-e1[1]);  // shouldn't happen?
+  }
   let seglen = sqr(e1[0]-e2[0]) + sqr(e1[1]-e2[1]);
   let t = ((pt[0]-e1[0])*(e2[0]-e1[0]) + (pt[1]-e1[1])*(e2[1]-e1[1]))/seglen;
   t = Math.max(0, Math.min(1, t)); // constrain to 0<=t<=1 (on segment)
@@ -212,6 +223,7 @@ function ptlsdist2(pt, e1, e2) {
 
 FractalDraw.prototype.closestLn = function(pt) {
   if (this.seed.length < 1) return -1;
+
   let clIdx = 0;
   let clDistSq = ptlsdist2(pt, this.seed[0], this.seed[1]);
   for (let i=1; i<this.seed.length-1; i++) {
@@ -223,10 +235,11 @@ FractalDraw.prototype.closestLn = function(pt) {
   }
 
   // Tolerance: Must be within 5 pixels...
-  if (clDistSq <= 25.0)
+  if (clDistSq <= 25.0) {
     return clIdx;
-  else
+  } else {
     return -1;
+  }
 };
 
 FractalDraw.prototype.clear = function() {
@@ -408,7 +421,8 @@ function SeedEditor (fractalDraw, enabled) {
     typeBtn.className = 'btn btn-secondary btn-sm';
     typeBtn.style.marginLeft='4px';
     typeBtn.onclick = function(type) {
-      this.setSegType(type); }.bind(this, i);
+      this.setSegType(type);
+    }.bind(this, i);
     this.segTypeBtn.push(typeBtn);
     panelTD.appendChild(typeBtn);
   }
@@ -427,7 +441,8 @@ function SeedEditor (fractalDraw, enabled) {
   this.picker = document.createElement('select');
   this.picker.type = 'list';
   this.picker.onchange = function() {
-    this.pickSeed(); }.bind(this);
+    this.pickSeed();
+  }.bind(this);
 
   panelTD.appendChild(this.picker);
   this.addSeed('edit', 'Make your own...', []);
@@ -440,7 +455,8 @@ function SeedEditor (fractalDraw, enabled) {
   this.clearBtn.style.width = '80px';
 
   this.clearBtn.onclick = function() {
-    this.clearBtnClicked(); }.bind(this);
+    this.clearBtnClicked();
+  }.bind(this);
   panelTD.appendChild(this.clearBtn);
 
   this.snapBox = document.createElement('input');
@@ -594,10 +610,11 @@ SeedEditor.prototype.enableMode = function() {
   this.workcanvas.style.display = 'inline';
   this.ctrlPanel.style.display = 'inline-block';
   if ((this.editMode == SeedEditor.EDITMODE.DONE) ||
-      (this.editMode == SeedEditor.EDITMODE.LOCKED))
+      (this.editMode == SeedEditor.EDITMODE.LOCKED)) {
     this.fractalDraw.drawSeed(true);
-  else
+  } else {
     this.fractalDraw.drawSeed(false);
+  }
 };
 
 SeedEditor.prototype.disableMode = function() {
@@ -633,7 +650,8 @@ SeedEditor.prototype.drawWork = function() {
 
   if ((this.gridhighlight[0] != -1) && (this.gridhighlight[1] != -1)) {
     this.workctx.beginPath();
-    this.workctx.arc(this.gridhighlight[0], this.gridhighlight[1], 3.5, 0, 6.28);
+    this.workctx.arc(this.gridhighlight[0], this.gridhighlight[1],
+		     3.5, 0, 6.28);
     this.workctx.fill();
   }
 };
@@ -667,8 +685,9 @@ SeedEditor.prototype.getMousePos = function(evt) {
 
 SeedEditor.prototype.mouseMove = function(evt) {
   if ((this.editMode == SeedEditor.EDITMODE.DONE) ||
-      (this.editMode == SeedEditor.EDITMODE.LOCKED))
+      (this.editMode == SeedEditor.EDITMODE.LOCKED)) {
     return;
+  }
 
   this.getMousePos(evt);
   if ((this.mouseX != this.gridhighlight[0]) ||
@@ -702,9 +721,14 @@ SeedEditor.prototype.mouseClick = function(evt) {
       if (closestPt == 0) {
         this.anchor1 = [seed[1][0],seed[1][1],seed[1][2]];
       } else {
-        this.anchor1 = [seed[closestPt-1][0],seed[closestPt-1][1],seed[closestPt][2]];
-        if (closestPt < seed.length-1)
-          this.anchor2 = [seed[closestPt+1][0],seed[closestPt+1][1],seed[closestPt+1][2]];
+        this.anchor1 = [seed[closestPt-1][0],
+			seed[closestPt-1][1],
+			seed[closestPt][2]];
+        if (closestPt < seed.length-1) {
+          this.anchor2 = [seed[closestPt+1][0],
+			  seed[closestPt+1][1],
+			  seed[closestPt+1][2]];
+	}
       }
       this.movePt = closestPt;
       this.fractalDraw.drawSeed(false,this.movePt);
@@ -721,7 +745,7 @@ SeedEditor.prototype.mouseClick = function(evt) {
   } else if (this.editMode == SeedEditor.EDITMODE.MOVEPT) {
     if (this.movePt >= 0) {
       this.fractalDraw.changeSeedPt(this.movePt,
-                                    [this.mouseX, this.mouseY, this.anchor1[2]]);
+                                  [this.mouseX, this.mouseY, this.anchor1[2]]);
       this.fractalDraw.clear();
       this.fractalDraw.drawSeed(true);
       this.clearWork();
@@ -736,7 +760,8 @@ SeedEditor.prototype.keyPress = function(evt) {
   let charCode = evt.keyCode || evt.which;
   if ((charCode == 46) || (charCode == 8)) {
     // Delete (or backspace)
-    if ((this.editMode == SeedEditor.EDITMODE.MOVEPT) && (this.fractalDraw.seed.length > 2)) {
+    if ((this.editMode == SeedEditor.EDITMODE.MOVEPT) &&
+	(this.fractalDraw.seed.length > 2)) {
       this.fractalDraw.deleteFromSeed(this.movePt);
       this.fractalDraw.clear();
       this.fractalDraw.drawSeed(true);
@@ -762,7 +787,9 @@ SeedEditor.prototype.mouseDblClick = function(evt) {
     let closestLn = this.fractalDraw.closestLn([this.rawX,this.rawY]);
     let seed = this.fractalDraw.seed;
     if ((closestPt == -1) && (closestLn >= 0)) {
-      this.fractalDraw.insertInSeed([this.mouseX,this.mouseY,seed[closestLn+1][2]], closestLn+1);
+      this.fractalDraw.insertInSeed([this.mouseX,
+				     this.mouseY,seed[closestLn+1][2]],
+				    closestLn+1);
 
       this.anchor1 = seed[closestLn].slice();
       this.anchor2 = seed[closestLn+2].slice();
@@ -1296,8 +1323,9 @@ function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
   this.editorDiv.disableMode();
 
   let seedlist = 'koch,sprout,tree';
-  if (mainDiv.dataset['seedlist'] != undefined)
+  if (mainDiv.dataset['seedlist'] != undefined) {
     seedlist = mainDiv.dataset['seedlist'];
+  }
   let stdseeds = seedlist.split(',');
   for (let i=0; i<stdseeds.length; i++)
     this.editorDiv.addStdSeed(stdseeds[i]);
@@ -1321,7 +1349,8 @@ MultiModeTool.prototype.addMode = function(title, modeObj) {
   button.className = 'btn btn-secondary btn-sm';
   button.style.marginLeft = '4px';
   button.onclick = function(modeNum) {
-    this.setMode(modeNum); }.bind(this, this.modes.length);
+    this.setMode(modeNum);
+  }.bind(this, this.modes.length);
   this.modeSelDiv.appendChild(button);
   modeObj.disableMode();
   this.ctrlPanelDiv.appendChild(modeObj.getCtrls());
