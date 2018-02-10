@@ -26,50 +26,51 @@ function sqr(x) {
 function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
   this.seed = seed;
 
-  this.canvas = document.createElement("canvas");
-  this.canvas.id = "ft-drawing-canvas-" + toolNum;
+  this.canvas = document.createElement('canvas');
+  this.canvas.id = 'ft-drawing-canvas-' + toolNum;
   this.canvas.width = Math.max(640, askWidth);
   this.canvas.height = Math.max(320, askHeight);
-  this.canvas.style.cssText = "border:1px solid black; position:absolute; left:0; top:0; z-index: 1;";
-  this.ctx = this.canvas.getContext("2d");
+  this.canvas.style.cssText = 'border:1px solid black; position:absolute;' +
+                              'left:0; top:0; z-index: 1;';
+  this.ctx = this.canvas.getContext('2d');
 
-  this.ctrlPanel = document.createElement("div");
-  this.ctrlPanel.id = "ft-drawing-ctrls-" + toolNum;
-  this.ctrlPanel.style.display = "block";
+  this.ctrlPanel = document.createElement('div');
+  this.ctrlPanel.id = 'ft-drawing-ctrls-' + toolNum;
+  this.ctrlPanel.style.display = 'block';
 
-  this.levelButtons = document.createElement("div");
+  this.levelButtons = document.createElement('div');
   for (i=1; i<=8; i++) {
-    let button = document.createElement("button");
-    button.className="btn btn-secondary btn-sm";
-    button.style.marginLeft = "4px";
-    button.addEventListener("click", function(inum) {
+    let button = document.createElement('button');
+    button.className='btn btn-secondary btn-sm';
+    button.style.marginLeft = '4px';
+    button.addEventListener('click', function(inum) {
       this.drawIt(inum); }.bind(this,i));
-    button.innerHTML = "Iter " + i;
+    button.innerHTML = 'Iter ' + i;
     this.levelButtons.appendChild(button);
   }
   this.currLevels = levels;
   this.ctrlPanel.appendChild(this.levelButtons);
 
-  panelRow = document.createElement("div");
-  panelRow.style.marginTop = "10px";
-  let thickLabel = document.createElement("span");
-  thickLabel.style.marginLeft = "4px";
-  thickLabel.innerHTML = "Line Thickness: ";
+  panelRow = document.createElement('div');
+  panelRow.style.marginTop = '10px';
+  let thickLabel = document.createElement('span');
+  thickLabel.style.marginLeft = '4px';
+  thickLabel.innerHTML = 'Line Thickness: ';
   panelRow.appendChild(thickLabel);
-  this.drawThickness = document.createElement("input");
-  this.drawThickness.type = "number";
+  this.drawThickness = document.createElement('input');
+  this.drawThickness.type = 'number';
   this.drawThickness.value = 1;
   this.drawThickness.min = 1;
-  this.drawThickness.style.width = "60px";
-  this.drawThickness.addEventListener("change", function () {
+  this.drawThickness.style.width = '60px';
+  this.drawThickness.addEventListener('change', function() {
     if (this.drawThickness.value < 1.0) {
       this.drawThickness.value = 1.0;
     }
     this.drawIt(this.currLevels); }.bind(this));
   panelRow.appendChild(this.drawThickness);
-  this.dimInfo = document.createElement("span");
-  this.dimInfo.style.marginLeft = "20px";
-  this.dimInfo.innerHTML = "Dim=?";
+  this.dimInfo = document.createElement('span');
+  this.dimInfo.style.marginLeft = '20px';
+  this.dimInfo.innerHTML = 'Dim=?';
   panelRow.appendChild(this.dimInfo);
 
   this.ctrlPanel.appendChild(panelRow);
@@ -175,7 +176,7 @@ FractalDraw.prototype.deleteFromSeed = function(idx) {
   }
 };
 
-FractalDraw.prototype.changeSeedPt = function (ptNum, newPoint) {
+FractalDraw.prototype.changeSeedPt = function(ptNum, newPoint) {
   this.seed[ptNum] = newPoint;
 };
 
@@ -240,7 +241,7 @@ FractalDraw.prototype.drawIt = function(levels) {
   this.levelButtons.children[levels-1].disabled = true;
   this.clear();
   this.ctx.lineWidth = this.drawThickness.value;
-  this.ctx.strokeStyle = "black";
+  this.ctx.strokeStyle = 'black';
   this.basedraw(this.seed[0], this.seed[this.seed.length-1], 1, levels);
   this.ctx.closePath();
 };
@@ -254,18 +255,18 @@ FractalDraw.prototype.getCtrls = function() {
 };
 
 FractalDraw.prototype.enableMode = function() {
-  this.ctrlPanel.style.display = "inline-block";
+  this.ctrlPanel.style.display = 'inline-block';
   this.drawIt(this.currLevels);
   let dim = Math.round(this.getDim()*1000.0)/1000.0;
   if (dim == -1) {
-    this.dimInfo.innerHTML = "Dim=?";
+    this.dimInfo.innerHTML = 'Dim=?';
   } else {
-    this.dimInfo.innerHTML = "Dim="+dim;
+    this.dimInfo.innerHTML = 'Dim='+dim;
   }
 };
 
 FractalDraw.prototype.disableMode = function() {
-  this.ctrlPanel.style.display = "none";
+  this.ctrlPanel.style.display = 'none';
 };
 
 FractalDraw.prototype.drawSeed = function(drawBaseLine=false, without = -1) {
@@ -284,7 +285,7 @@ FractalDraw.prototype.drawSeed = function(drawBaseLine=false, without = -1) {
     if (drawBaseLine) {
       this.ctx.beginPath();
       this.ctx.lineWidth = 1;
-      this.ctx.strokeStyle = "black";
+      this.ctx.strokeStyle = 'black';
       this.ctx.setLineDash([10,10]);
       this.ctx.moveTo(this.seed[0][0], this.seed[0][1]);
       this.ctx.lineTo(this.seed[this.seed.length-1][0],
@@ -346,32 +347,32 @@ FractalDraw.prototype.basedraw = function(start, end, hflip, level) {
 function SeedEditor (fractalDraw, enabled) {
   this.fractalDraw = fractalDraw;
   let drawingcanvas = fractalDraw.getCanvas();
-  let drawingz = parseInt(drawingcanvas.style["z-index"]);
-  drawingcanvas.style["z-index"] = drawingz+1;
+  let drawingz = parseInt(drawingcanvas.style['z-index']);
+  drawingcanvas.style['z-index'] = drawingz+1;
 
-  this.bgcanvas = document.createElement("canvas");
-  this.bgcanvas.id = "fraceditbg";
+  this.bgcanvas = document.createElement('canvas');
+  this.bgcanvas.id = 'fraceditbg';
   this.bgcanvas.width = drawingcanvas.width;
   this.bgcanvas.height = drawingcanvas.height;
   this.bgcanvas.style.cssText = drawingcanvas.style.cssText;
-  this.bgcanvas.style["z-index"] = drawingz;
+  this.bgcanvas.style['z-index'] = drawingz;
   if (!enabled) {
-    this.bgcanvas.style["display"] = "none";
+    this.bgcanvas.style['display'] = 'none';
   }
   drawingcanvas.parentElement.appendChild(this.bgcanvas);
   this.setupBackground();
 
-  this.workcanvas = document.createElement("canvas");
-  this.workcanvas.id = "fraceditwork";
+  this.workcanvas = document.createElement('canvas');
+  this.workcanvas.id = 'fraceditwork';
   this.workcanvas.width = drawingcanvas.width;
   this.workcanvas.height = drawingcanvas.height;
   this.workcanvas.style.cssText = drawingcanvas.style.cssText;
-  this.workcanvas.style["z-index"] = drawingz+2;
+  this.workcanvas.style['z-index'] = drawingz+2;
   if (!enabled) {
-    this.workcanvas.style["display"] = "none";
+    this.workcanvas.style['display'] = 'none';
   }
   drawingcanvas.parentElement.appendChild(this.workcanvas);
-  this.workctx = this.workcanvas.getContext("2d");
+  this.workctx = this.workcanvas.getContext('2d');
   this.workrect = this.workcanvas.getBoundingClientRect();
   this.workcanvas.seedEditor = this;
 
@@ -389,67 +390,67 @@ function SeedEditor (fractalDraw, enabled) {
   this.anchor2 = null;
   this.movePt = -1;
 
-  this.ctrlPanel = document.createElement("div");
-  this.ctrlPanel.id = "scoobydoo";
-  this.ctrlPanel.style.display = "block";
+  this.ctrlPanel = document.createElement('div');
+  this.ctrlPanel.id = 'scoobydoo';
+  this.ctrlPanel.style.display = 'block';
 
-  let panelTbl = document.createElement("table");
-  let panelRow = document.createElement("tr");
+  let panelTbl = document.createElement('table');
+  let panelRow = document.createElement('tr');
   panelTbl.appendChild(panelRow);
 
-  let panelTD = document.createElement("td");
+  let panelTD = document.createElement('td');
   this.currentSegType = -1;
   this.segTypeBtn = [];
   for (let i=0; i<SeedEditor.SegType.length; i++) {
-    let typeBtn = document.createElement("button");
+    let typeBtn = document.createElement('button');
     //  typeBtn.innerHTML = SeedEditor.SegType[i].name;
-    typeBtn.innerHTML = "<img src='button"+(i+1)+".png' />";
-    typeBtn.className = "btn btn-secondary btn-sm";
-    typeBtn.style.marginLeft="4px";
-    typeBtn.onclick = function (type) {
+    typeBtn.innerHTML = '<img src="button' + (i+1) + '.png" />';
+    typeBtn.className = 'btn btn-secondary btn-sm';
+    typeBtn.style.marginLeft='4px';
+    typeBtn.onclick = function(type) {
       this.setSegType(type); }.bind(this, i);
     this.segTypeBtn.push(typeBtn);
     panelTD.appendChild(typeBtn);
   }
   panelRow.appendChild(panelTD);
 
-  panelRow = document.createElement("tr");
+  panelRow = document.createElement('tr');
   panelTbl.appendChild(panelRow);
-  panelTD = document.createElement("td");
-  panelTD.style["padding-top"] = "6px";
+  panelTD = document.createElement('td');
+  panelTD.style['padding-top'] = '6px';
 
   this.stdSeeds = [];
   this.stdSeedWidth = [];
-  let pickerLabel = document.createElement("span");
-  pickerLabel.innerHTML = "Seed: ";
+  let pickerLabel = document.createElement('span');
+  pickerLabel.innerHTML = 'Seed: ';
   panelTD.appendChild(pickerLabel);
-  this.picker = document.createElement("select");
-  this.picker.type = "list";
+  this.picker = document.createElement('select');
+  this.picker.type = 'list';
   this.picker.onchange = function() {
     this.pickSeed(); }.bind(this);
 
   panelTD.appendChild(this.picker);
-  this.addSeed("edit", "Make your own...", []);
+  this.addSeed('edit', 'Make your own...', []);
 
-  this.clearBtn = document.createElement("button");
-  this.clearBtn.innerHTML = "Clear";
-  this.clearBtn.className = "btn btn-secondary btn-sm";
-  this.clearBtn.style.marginLeft = "4px";
-  this.clearBtn.style.marginRight = "4px";
-  this.clearBtn.style.width = "80px";
+  this.clearBtn = document.createElement('button');
+  this.clearBtn.innerHTML = 'Clear';
+  this.clearBtn.className = 'btn btn-secondary btn-sm';
+  this.clearBtn.style.marginLeft = '4px';
+  this.clearBtn.style.marginRight = '4px';
+  this.clearBtn.style.width = '80px';
 
   this.clearBtn.onclick = function() {
     this.clearBtnClicked(); }.bind(this);
   panelTD.appendChild(this.clearBtn);
 
-  this.snapBox = document.createElement("input");
-  this.snapBox.type = "checkbox";
+  this.snapBox = document.createElement('input');
+  this.snapBox.type = 'checkbox';
   this.snapBox.checked = true;
-  this.snapBox.style.marginLeft = "8px";
+  this.snapBox.style.marginLeft = '8px';
   panelTD.appendChild(this.snapBox);
 
-  let snapBoxLabel = document.createElement("span");
-  snapBoxLabel.innerHTML = "Snap to grid";
+  let snapBoxLabel = document.createElement('span');
+  snapBoxLabel.innerHTML = 'Snap to grid';
   panelTD.appendChild(snapBoxLabel);
 
   panelRow.appendChild(panelTD);
@@ -460,9 +461,9 @@ function SeedEditor (fractalDraw, enabled) {
 }
 
 SeedEditor.prototype.addSeed = function(name, longname, seed, width) {
-  let option = document.createElement("option");
+  let option = document.createElement('option');
   option.value = name;
-  option.dataset["name"] = name;
+  option.dataset['name'] = name;
   option.innerHTML = longname;
   this.stdSeeds.push(seed);
   this.stdSeedWidth.push(width);
@@ -488,7 +489,7 @@ SeedEditor.prototype.setSeedByName = function(seedName) {
   let findName = seedName.toLowerCase();
   let seeds = this.picker.children;
   for (let i=0; i<seeds.length; i++) {
-    if (findName == seeds[i].dataset["name"]) {
+    if (findName == seeds[i].dataset['name']) {
       this.picker.selectedIndex = i;
       this.pickSeed();
       return;
@@ -537,28 +538,28 @@ SeedEditor.prototype.setSegType = function(type) {
 
 SeedEditor.SegType = [
   {
-    name: "Reg",
-    color: "#e41a1c",
+    name: 'Reg',
+    color: '#e41a1c',
     width: 2
   },{
-    name: "Flip",
-    color: "#377eb8",
+    name: 'Flip',
+    color: '#377eb8',
     width: 2
   },{
-    name: "Disabled1",
-    color: "#ff7f00",
+    name: 'Disabled1',
+    color: '#ff7f00',
     width: 2
   },{
-    name: "Disabled2",
-    color: "#984ea3",
+    name: 'Disabled2',
+    color: '#984ea3',
     width: 2
   },{
-    name: "No Recurse",
-    color: "#4daf4a",
+    name: 'No Recurse',
+    color: '#4daf4a',
     width: 2
   },{
-    name: "No Line",
-    color: "#808080",
+    name: 'No Line',
+    color: '#808080',
     width: 1
   }
 ];
@@ -572,8 +573,8 @@ SeedEditor.EDITMODE = {
 };
 
 SeedEditor.prototype.setupBackground = function() {
-  let bgctx = this.bgcanvas.getContext("2d");
-  bgctx.strokeStyle = "#a0a0a0";
+  let bgctx = this.bgcanvas.getContext('2d');
+  bgctx.strokeStyle = '#a0a0a0';
   bgctx.lineWidth = 1;
   // center is (20.5,20.5) - go 18-23
   for (let x = 1; x < Math.floor(this.bgcanvas.width/20); x++) {
@@ -589,9 +590,9 @@ SeedEditor.prototype.setupBackground = function() {
 };
 
 SeedEditor.prototype.enableMode = function() {
-  this.bgcanvas.style.display = "inline";
-  this.workcanvas.style.display = "inline";
-  this.ctrlPanel.style.display = "inline-block";
+  this.bgcanvas.style.display = 'inline';
+  this.workcanvas.style.display = 'inline';
+  this.ctrlPanel.style.display = 'inline-block';
   if ((this.editMode == SeedEditor.EDITMODE.DONE) ||
       (this.editMode == SeedEditor.EDITMODE.LOCKED))
     this.fractalDraw.drawSeed(true);
@@ -600,9 +601,9 @@ SeedEditor.prototype.enableMode = function() {
 };
 
 SeedEditor.prototype.disableMode = function() {
-  this.bgcanvas.style.display = "none";
-  this.workcanvas.style.display = "none";
-  this.ctrlPanel.style.display = "none";
+  this.bgcanvas.style.display = 'none';
+  this.workcanvas.style.display = 'none';
+  this.ctrlPanel.style.display = 'none';
 };
 
 SeedEditor.prototype.reset = function() {
@@ -677,7 +678,7 @@ SeedEditor.prototype.mouseMove = function(evt) {
   }
 };
 
-SeedEditor.prototype.mouseClick = function (evt) {
+SeedEditor.prototype.mouseClick = function(evt) {
   let seed = this.fractalDraw.seed; // Better way to do this?
   this.getMousePos(evt);
   if (this.editMode == SeedEditor.EDITMODE.DEFINING) {
@@ -731,7 +732,7 @@ SeedEditor.prototype.mouseClick = function (evt) {
   }
 };
 
-SeedEditor.prototype.keyPress = function (evt) {
+SeedEditor.prototype.keyPress = function(evt) {
   let charCode = evt.keyCode || evt.which;
   if ((charCode == 46) || (charCode == 8)) {
     // Delete (or backspace)
@@ -747,7 +748,7 @@ SeedEditor.prototype.keyPress = function (evt) {
   }
 };
 
-SeedEditor.prototype.mouseDblClick = function (evt) {
+SeedEditor.prototype.mouseDblClick = function(evt) {
   if (this.editMode == SeedEditor.EDITMODE.DEFINING) {
     this.getMousePos(evt);
     this.fractalDraw.addToSeed([this.mouseX,this.mouseY,this.currentSegType]);
@@ -776,8 +777,8 @@ SeedEditor.prototype.mouseDblClick = function (evt) {
 };
 
 SeedEditor.StdSeeds = {
-  "3crosses": {
-    fullname: "Three Crosses",
+  '3crosses': {
+    fullname: 'Three Crosses',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 3,
@@ -788,8 +789,8 @@ SeedEditor.StdSeeds = {
            [160.0,220.0,4],[160.0,120.0,4],[260.0,120.0,4],
            [300.0,180.0,5],[340.0,180.0,0],[380.0,180.0,5]]
   },
-  "baila": {
-    fullname: "Ba-ila",
+  'baila': {
+    fullname: 'Ba-ila',
     thickness: 2.0,
     thicknessType: 1,
     itNumber: 3,
@@ -823,8 +824,8 @@ SeedEditor.StdSeeds = {
            [374.7213439941406,118.43974304199219,0],
            [210.0,32.34235382080078,5]]
   },
-  "blanket": {
-    fullname: "Fulani blanket",
+  'blanket': {
+    fullname: 'Fulani blanket',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 3,
@@ -837,8 +838,8 @@ SeedEditor.StdSeeds = {
            [550.0,100.0,4],[510.0,160.0,4],[470.0,100.0,4],
            [430.0,160.0,4],[360.0,160.0,5]]
   },
-  "bullhorn": {
-    fullname: "Ghanian bull horn",
+  'bullhorn': {
+    fullname: 'Ghanian bull horn',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 4,
@@ -850,8 +851,8 @@ SeedEditor.StdSeeds = {
            [209.0,154.0,4],[244.0,156.0,0],[255.0,170.0,4],
            [220.0,200.0,5],[258.0,171.0,5]]
   },
-  "cantorpaper": {
-    fullname: "cantorpaper",
+  'cantorpaper': {
+    fullname: 'cantorpaper',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 3,
@@ -860,8 +861,8 @@ SeedEditor.StdSeeds = {
            [260.0,241.0,5],[320.0,241.0,0],[340.0,241.0,5],
            [240.0,241.0,4],[360.0,161.0,5]]
   },
-  "carpet": {
-    fullname: "Sierpinski Carpet",
+  'carpet': {
+    fullname: 'Sierpinski Carpet',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 3,
@@ -886,8 +887,8 @@ SeedEditor.StdSeeds = {
            [238.58258056640625,197.11302185058594,0],
            [380.0522155761719,300.0,5]]
   },
-  "chaetophora": {
-    fullname: "Chaetophora",
+  'chaetophora': {
+    fullname: 'Chaetophora',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 5,
@@ -903,8 +904,8 @@ SeedEditor.StdSeeds = {
            [309.412841796875,245.58892822265625,5],
            [258.3596496582031,245.58892822265625,5]]
   },
-  "cnegative": {
-    fullname: "Negative Feedback",
+  'cnegative': {
+    fullname: 'Negative Feedback',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
@@ -915,15 +916,15 @@ SeedEditor.StdSeeds = {
            [280.0,240.0,0],[300.0,240.0,0],[320.0,240.0,0],
            [340.0,240.0,0]]
   },
-  "cpositive": {
-    fullname: "Positive Feedback",
+  'cpositive': {
+    fullname: 'Positive Feedback',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
     seed: [[340.0,100.0,0],[240.0,160.0,0],[340.0,240.0,0]]
   },
-  "davincitree2": {
-    fullname: "Davinci Tree 2",
+  'davincitree2': {
+    fullname: 'Davinci Tree 2',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 2,
@@ -931,8 +932,8 @@ SeedEditor.StdSeeds = {
            [260.0,210.0,0],[270.0,210.0,4],[290.0,230.0,0],
            [290.0,320.0,4],[290.0,320.0,5]]
   },
-  "davincitree3": {
-    fullname: "Davinci Tree 3",
+  'davincitree3': {
+    fullname: 'Davinci Tree 3',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 2,
@@ -940,8 +941,8 @@ SeedEditor.StdSeeds = {
            [253.0,211.0,0],[277.0,211.0,0],[290.0,230.0,0],
            [290.0,320.0,4],[290.0,320.0,5]]
   },
-  "davincitree4": {
-    fullname: "Davinci Tree 4",
+  'davincitree4': {
+    fullname: 'Davinci Tree 4',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 2,
@@ -952,8 +953,8 @@ SeedEditor.StdSeeds = {
            [288.75115966796875,232.24789428710938,0],
            [288.75115966796875,320.0,4],[288.75115966796875,320.0,5]]
   },
-  "dendrite": {
-    fullname: "Dendrite",
+  'dendrite': {
+    fullname: 'Dendrite',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 4,
@@ -966,8 +967,8 @@ SeedEditor.StdSeeds = {
            [306.510009765625,228.70999145507812,5],[380.0,240.0,5],
            [260.0,240.0,5]]
   },
-  "ethiopian2": {
-    fullname: "Ethiopian cross 2",
+  'ethiopian2': {
+    fullname: 'Ethiopian cross 2',
     thickness: 4.0,
     thicknessType: 0,
     itNumber: 3,
@@ -977,8 +978,8 @@ SeedEditor.StdSeeds = {
            [341.0,241.0,5],[261.0,161.0,0],[200.0,161.0,0],
            [221.0,160.0,5]]
   },
-  "ethiopian": {
-    fullname: "Ethiopian cross 1",
+  'ethiopian': {
+    fullname: 'Ethiopian cross 1',
     thickness: 4.0,
     thicknessType: 0,
     itNumber: 3,
@@ -988,8 +989,8 @@ SeedEditor.StdSeeds = {
            [340.0,301.0,0],[340.0,261.0,5],[260.0,181.0,0],
            [220.0,181.0,0],[220.0,181.0,5]]
   },
-  "fern": {
-    fullname: "Fern",
+  'fern': {
+    fullname: 'Fern',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 9,
@@ -997,8 +998,8 @@ SeedEditor.StdSeeds = {
            [280.0,38.0,0],[200.0,158.0,5],[500.0,138.0,0],
            [200.0,158.0,5],[340.0,278.0,0],[500.0,138.0,5]]
   },
-  "fractalspirals": {
-    fullname: "fractalspirals",
+  'fractalspirals': {
+    fullname: 'fractalspirals',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 9,
@@ -1006,8 +1007,8 @@ SeedEditor.StdSeeds = {
            [260.0,180.0,5],[320.0,100.0,5],[360.0,180.0,0],
            [320.0,180.0,5],[260.0,180.0,5]]
   },
-  "ghanahorns": {
-    fullname: "ghanahorns",
+  'ghanahorns': {
+    fullname: 'ghanahorns',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 9,
@@ -1030,8 +1031,8 @@ SeedEditor.StdSeeds = {
            [418.2435302734375,218.07699584960938,4],[367.0,262.0,5],
            [454.84600830078125,262.0,5]]
   },
-  "goldenrec": {
-    fullname: "Golden Rectangle",
+  'goldenrec': {
+    fullname: 'Golden Rectangle',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 8,
@@ -1040,8 +1041,8 @@ SeedEditor.StdSeeds = {
            [328.07220458984375,174.0,4],[304.0,174.0,0],
            [304.0,156.4929656982422,5]]
   },
-  "kitwe": {
-    fullname: "Kitwe",
+  'kitwe': {
+    fullname: 'Kitwe',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 3,
@@ -1050,24 +1051,24 @@ SeedEditor.StdSeeds = {
            [261.0,240.0,4],[241.0,200.0,4],
            [269.44482421875,202.2428436279297,5],[321.0,240.0,5]]
   },
-  "koch": {
-    fullname: "Koch Curve",
+  'koch': {
+    fullname: 'Koch Curve',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
     seed: [[60.0,280.0,0],[200.0,280.0,0],[320.0,140.0,0],
            [440.0,280.0,0],[580.0,280.0,0]]
   },
-  "kochsmall": {
-    fullname: "Small Koch Curve",
+  'kochsmall': {
+    fullname: 'Small Koch Curve',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
     seed: [[180.5,240.5,0],[260.5,240.5,0],[320.5,160.5,0],
            [380.5,240.5,0],[460.5,240.5,0]]
   },
-  "logone": {
-    fullname: "Logone",
+  'logone': {
+    fullname: 'Logone',
     thickness: 4.0,
     thicknessType: 0,
     itNumber: 3,
@@ -1077,16 +1078,16 @@ SeedEditor.StdSeeds = {
            [320.0,300.0,4],[220.0,300.0,2],[180.0,300.0,4],
            [180.0,300.0,5]]
   },
-  "lungs": {
-    fullname: "Human Lungs",
+  'lungs': {
+    fullname: 'Human Lungs',
     thickness: 8.0,
     thicknessType: 1,
     itNumber: 8,
     seed: [[320.0,90.0,0],[320.0,190.0,4],[250.0,200.0,0],
            [320.0,190.0,5],[380.0,200.0,0],[320.0,190.0,5]]
   },
-  "mokoulek": {
-    fullname: "Mokoulek",
+  'mokoulek': {
+    fullname: 'Mokoulek',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 4,
@@ -1104,8 +1105,8 @@ SeedEditor.StdSeeds = {
            [460.0,220.0,1],[480.0,220.0,5],[480.0,200.0,1],
            [240.0,220.0,5],[260.0,100.0,0],[240.0,100.0,5]]
   },
-  "nankani": {
-    fullname: "Nankani",
+  'nankani': {
+    fullname: 'Nankani',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 5,
@@ -1128,8 +1129,8 @@ SeedEditor.StdSeeds = {
            [350.9679870605469,54.74000549316406,4],[272.0,82.0,5],
            [263.0,170.0,0],[211.0,121.97000122070312,5],[329.0,173.0,5]]
   },
-  "negative": {
-    fullname: "negative",
+  'negative': {
+    fullname: 'negative',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
@@ -1140,8 +1141,8 @@ SeedEditor.StdSeeds = {
            [280.0,240.0,0],[300.0,240.0,0],[320.0,240.0,0],
            [340.0,240.0,0]]
   },
-  "neuron": {
-    fullname: "Neuron",
+  'neuron': {
+    fullname: 'Neuron',
     thickness: 5.0,
     thicknessType: 1,
     itNumber: 3,
@@ -1154,14 +1155,14 @@ SeedEditor.StdSeeds = {
            [213.0,243.0,0],[242.0,152.0,5],[202.0,108.0,0],
            [142.0,107.0,5],[242.0,147.0,5]]
   },
-  "positive": {
-    fullname: "positive",
+  'positive': {
+    fullname: 'positive',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
     seed: [[320.0,100.0,0],[220.0,160.0,0],[320.0,220.0,0]]
   },
-  "queenanne": {
+  'queenanne': {
     fullname: "Queen Anne's Lace",
     thickness: 2.0,
     thicknessType: 1,
@@ -1175,8 +1176,8 @@ SeedEditor.StdSeeds = {
            [300.0,200.0,0],[306.510009765625,228.70999145507812,5],
            [260.0,220.0,5]]
   },
-  "riverbasin": {
-    fullname: "River Basin",
+  'riverbasin': {
+    fullname: 'River Basin',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 8,
@@ -1184,8 +1185,8 @@ SeedEditor.StdSeeds = {
            [288.2153015136719,24.205242156982422,0],[300.0,260.0,0],
            [547.5895385742188,260.0,0],[547.5895385742188,260.0,5]]
   },
-  "sierpinski": {
-    fullname: "Sierpinski Triangle",
+  'sierpinski': {
+    fullname: 'Sierpinski Triangle',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 5,
@@ -1197,8 +1198,8 @@ SeedEditor.StdSeeds = {
            [200.0,260.0,5],[299.989990234375,81.80000305175781,4],
            [200.0,260.0,5]]
   },
-  "sprout": {
-    fullname: "Sprout",
+  'sprout': {
+    fullname: 'Sprout',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 9,
@@ -1206,8 +1207,8 @@ SeedEditor.StdSeeds = {
            [260.0,180.0,0],[340.0,120.0,0],[320.0,180.0,5],
            [260.0,180.0,5]]
   },
-  "turbulence": {
-    fullname: "Turbulence",
+  'turbulence': {
+    fullname: 'Turbulence',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 9,
@@ -1217,8 +1218,8 @@ SeedEditor.StdSeeds = {
            [154.1025848388672,133.72434997558594,5],
            [177.2521514892578,168.44869995117188,0]]
   },
-  "villi": {
-    fullname: "Intestinal Villi",
+  'villi': {
+    fullname: 'Intestinal Villi',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 2,
@@ -1234,8 +1235,8 @@ SeedEditor.StdSeeds = {
            [510.0,140.0,0],[510.0,160.0,0],[520.0,170.0,0],
            [540.0,180.0,0]]
   },
-  "sharkfin": {
-    fullname: "Shark Fin",
+  'sharkfin': {
+    fullname: 'Shark Fin',
     seed: [[200.0,260.0,0],[280.0,260.0,0],[380.0,200.0,4],
            [380.0,260.0,4],[460.0,260.0,4]]
   }
@@ -1250,64 +1251,64 @@ function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
   this.currentMode = -1;
 
   this.width = 800;
-  if (mainDiv.dataset["width"] != undefined) {
-    this.width = Math.max(640, mainDiv.dataset["width"]);
+  if (mainDiv.dataset['width'] != undefined) {
+    this.width = Math.max(640, mainDiv.dataset['width']);
   }
 
   this.height = 600;
-  if (mainDiv.dataset["height"] != undefined) {
-    this.height = Math.max(320, mainDiv.dataset["height"]);
+  if (mainDiv.dataset['height'] != undefined) {
+    this.height = Math.max(320, mainDiv.dataset['height']);
   }
 
 
-  this.canvasDiv = document.createElement("div");
-  this.canvasDiv.id = "ft-canvases-"+toolNum;
-  this.canvasDiv.style.position = "relative";
-  this.canvasDiv.style.height = (this.height + 4) + "px";
+  this.canvasDiv = document.createElement('div');
+  this.canvasDiv.id = 'ft-canvases-'+toolNum;
+  this.canvasDiv.style.position = 'relative';
+  this.canvasDiv.style.height = (this.height + 4) + 'px';
   mainDiv.appendChild(this.canvasDiv);
 
-  this.modeSelDiv = document.createElement("div");
-  this.modeSelDiv.id = "ft-modesel-"+toolNum;
-  this.modeSelDiv.style.display = "inline-block";
-  this.modeSelDiv.style["vertical-align"] = "top";
-  this.modeSelDiv.style.paddingRight = "10px";
-  this.modeSelDiv.style.marginRight = "10px";
-  this.modeSelDiv.style.borderRight = "2px solid gray";
+  this.modeSelDiv = document.createElement('div');
+  this.modeSelDiv.id = 'ft-modesel-'+toolNum;
+  this.modeSelDiv.style.display = 'inline-block';
+  this.modeSelDiv.style['vertical-align'] = 'top';
+  this.modeSelDiv.style.paddingRight = '10px';
+  this.modeSelDiv.style.marginRight = '10px';
+  this.modeSelDiv.style.borderRight = '2px solid gray';
   mainDiv.appendChild(this.modeSelDiv);
 
-  this.ctrlPanelDiv = document.createElement("div");
-  this.ctrlPanelDiv.id = "ft-ctrlpanel-"+toolNum;
-  this.ctrlPanelDiv.style.display = "inline";
+  this.ctrlPanelDiv = document.createElement('div');
+  this.ctrlPanelDiv.id = 'ft-ctrlpanel-'+toolNum;
+  this.ctrlPanelDiv.style.display = 'inline';
   mainDiv.appendChild(this.ctrlPanelDiv);
 
   let levels = 1;
-  if (mainDiv.dataset["levels"] != undefined) {
-    levels = mainDiv.dataset["levels"];
+  if (mainDiv.dataset['levels'] != undefined) {
+    levels = mainDiv.dataset['levels'];
   }
 
   this.drawDiv = new FractalDraw(toolNum, [], this.width, this.height, levels);
   this.canvasDiv.appendChild(this.drawDiv.getCanvas());
-  this.addMode("Draw Mode", this.drawDiv);
+  this.addMode('Draw Mode', this.drawDiv);
   this.drawDiv.disableMode();
 
   this.editorDiv = new SeedEditor(this.drawDiv, true);
-  this.addMode("Edit Mode", this.editorDiv);
+  this.addMode('Edit Mode', this.editorDiv);
   this.editorDiv.disableMode();
 
-  let seedlist = "koch,sprout,tree";
-  if (mainDiv.dataset["seedlist"] != undefined)
-    seedlist = mainDiv.dataset["seedlist"];
-  let stdseeds = seedlist.split(",");
+  let seedlist = 'koch,sprout,tree';
+  if (mainDiv.dataset['seedlist'] != undefined)
+    seedlist = mainDiv.dataset['seedlist'];
+  let stdseeds = seedlist.split(',');
   for (let i=0; i<stdseeds.length; i++)
     this.editorDiv.addStdSeed(stdseeds[i]);
 
-  if (mainDiv.dataset["seed"] != undefined) {
-    this.editorDiv.setSeedByName(mainDiv.dataset["seed"]);
+  if (mainDiv.dataset['seed'] != undefined) {
+    this.editorDiv.setSeedByName(mainDiv.dataset['seed']);
   }
 
   let mode = 1;
-  if ((mainDiv.dataset["mode"] != undefined) &&
-      (mainDiv.dataset["mode"].toLowerCase() == "draw")) {
+  if ((mainDiv.dataset['mode'] != undefined) &&
+      (mainDiv.dataset['mode'].toLowerCase() == 'draw')) {
     mode = 0;
   }
 
@@ -1315,10 +1316,10 @@ function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
 }
 
 MultiModeTool.prototype.addMode = function(title, modeObj) {
-  let button = document.createElement("button");
+  let button = document.createElement('button');
   button.innerHTML = title;
-  button.className = "btn btn-secondary btn-sm";
-  button.style.marginLeft = "4px";
+  button.className = 'btn btn-secondary btn-sm';
+  button.style.marginLeft = '4px';
   button.onclick = function(modeNum) {
     this.setMode(modeNum); }.bind(this, this.modes.length);
   this.modeSelDiv.appendChild(button);
@@ -1343,14 +1344,14 @@ MultiModeTool.prototype.setMode = function(modeNum) {
 let fractaltoolInstances = null;
 
 function fractalToolInit() {
-  let tools = document.getElementsByClassName("fractaltool");
+  let tools = document.getElementsByClassName('fractaltool');
   fractaltoolInstances = [];
   for (let i=0; i<tools.length; i++) {
     fractaltoolInstances[i] = new MultiModeTool(tools[i], i+1, 800, 600);
   }
 }
 
-window.addEventListener("load", function (evt) { fractalToolInit(); });
+window.addEventListener('load', function(evt) { fractalToolInit(); });
 
 // Local Variables:
 // mode: js
