@@ -19,10 +19,21 @@
  * through which recipients can access the Corresponding Source.
  */
 
+/** Returns the square of a value
+@param {double} x - The value to be squared
+@return {double} - The square of x
+*/
 function sqr(x) {
-  return x*x;
+  return x * x;
 }
 
+/** The main fractal drawing function
+@param {int} toolNum - The canvas number
+@param {int} seed - The starting shape
+@param {int} askWidth - Width of the div
+@param {int} askHeight - Height of the div
+@param {int} levels - The # of levels of recursion
+*/
 function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
   this.seed = seed;
 
@@ -31,7 +42,7 @@ function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
   this.canvas.width = Math.max(640, askWidth);
   this.canvas.height = Math.max(320, askHeight);
   this.canvas.style.cssText = 'border:1px solid black; position:absolute;' +
-                              'left:0; top:0; z-index: 1;';
+    'left:0; top:0; z-index: 1;';
   this.ctx = this.canvas.getContext('2d');
 
   this.ctrlPanel = document.createElement('div');
@@ -39,13 +50,13 @@ function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
   this.ctrlPanel.style.display = 'block';
 
   this.levelButtons = document.createElement('div');
-  for (i=1; i<=8; i++) {
+  for (i = 1; i <= 8; i++) {
     let button = document.createElement('button');
-    button.className='btn btn-secondary btn-sm';
+    button.className = 'btn btn-secondary btn-sm';
     button.style.marginLeft = '4px';
     button.addEventListener('click', function(inum) {
       this.drawIt(inum);
-    }.bind(this,i));
+    }.bind(this, i));
     button.innerHTML = 'Iter ' + i;
     this.levelButtons.appendChild(button);
   }
@@ -83,17 +94,17 @@ function FractalDraw(toolNum, seed, askWidth, askHeight, levels) {
 FractalDraw.prototype.checkDim = function(dim) {
   let seed = this.seed;
   if (seed.length < 2) return -1.0;
-  let baseline = Math.sqrt((seed[seed.length-1][0] - seed[0][0])**2 +
-                           (seed[seed.length-1][1] - seed[0][1])**2);
+  let baseline = Math.sqrt((seed[seed.length - 1][0] - seed[0][0]) ** 2 +
+    (seed[seed.length - 1][1] - seed[0][1]) ** 2);
   if (baseline < 1.0) return -1.0;
 
   let lenSum = 0.0;
-  for (let i=1; i<seed.length; i++) {
-    let segLen = Math.sqrt((seed[i][0] - seed[i-1][0])**2 +
-                           (seed[i][1] - seed[i-1][1])**2);
-    let linScale = segLen/baseline;
+  for (let i = 1; i < seed.length; i++) {
+    let segLen = Math.sqrt((seed[i][0] - seed[i - 1][0]) ** 2 +
+      (seed[i][1] - seed[i - 1][1]) ** 2);
+    let linScale = segLen / baseline;
     if (seed[i][2] < 4) {
-      lenSum += linScale**dim;
+      lenSum += linScale ** dim;
     }
   }
 
@@ -104,18 +115,18 @@ FractalDraw.prototype.getDim = function() {
   let seed = this.seed;
   let replSum = 0.0;
   let nonrepl = 0.0;
-  let baseline = Math.sqrt((seed[seed.length-1][0] - seed[0][0])**2 +
-                           (seed[seed.length-1][1] - seed[0][1])**2);
+  let baseline = Math.sqrt((seed[seed.length - 1][0] - seed[0][0]) ** 2 +
+    (seed[seed.length - 1][1] - seed[0][1]) ** 2);
   if (baseline < 1.0) return -1.0;
 
-  for (let i=1; i<seed.length; i++) {
-    let segLen = Math.sqrt((seed[i][0] - seed[i-1][0])**2 +
-                           (seed[i][1] - seed[i-1][1])**2);
-    let linScale = segLen/baseline;
+  for (let i = 1; i < seed.length; i++) {
+    let segLen = Math.sqrt((seed[i][0] - seed[i - 1][0]) ** 2 +
+      (seed[i][1] - seed[i - 1][1]) ** 2);
+    let linScale = segLen / baseline;
     if (seed[i][2] < 4) {
       replSum += linScale;
     } else if (seed[i][2] == 4) {
-      nonrepl += linScale;   // Visible but non-replicating
+      nonrepl += linScale; // Visible but non-replicating
     }
   }
 
@@ -137,8 +148,8 @@ FractalDraw.prototype.getDim = function() {
   tmp = this.checkDim(hi);
   if ((tmp == -1.0) || (tmp > 1.0)) return -1.0;
 
-  while ((hi-lo) > 0.0005) {
-    let mid = (lo+hi)/2;
+  while ((hi - lo) > 0.0005) {
+    let mid = (lo + hi) / 2;
     tmp = this.checkDim(mid);
     if (tmp >= 1.0) {
       lo = mid;
@@ -147,7 +158,7 @@ FractalDraw.prototype.getDim = function() {
     }
   }
 
-  return (lo+hi)/2;
+  return (lo + hi) / 2;
 };
 
 FractalDraw.prototype.setSeed = function(newSeed) {
@@ -160,14 +171,15 @@ FractalDraw.prototype.setDrawWidth = function(width) {
 
 FractalDraw.prototype.cloneSeed = function() {
   copy = [];
-  for (let i=0; i<this.seed.length; i++)
+  for (let i = 0; i < this.seed.length; i++) {
     copy.push(this.seed[i].slice());
+  }
   this.seed = copy;
 };
 
 FractalDraw.prototype.addToSeed = function(pt) {
-  if ((pt[0] != this.seed[this.seed.length-1][0]) ||
-      (pt[1] != this.seed[this.seed.length-1][1])) {
+  if ((pt[0] != this.seed[this.seed.length - 1][0]) ||
+    (pt[1] != this.seed[this.seed.length - 1][1])) {
     this.seed.push(pt);
   }
 };
@@ -192,9 +204,9 @@ FractalDraw.prototype.closestPt = function(pt) {
   if (this.seed.length < 1) return -1;
 
   let clIdx = 0;
-  let clDistSq = sqr(pt[0]-this.seed[0][0]) + sqr(pt[1]-this.seed[0][1]);
-  for (let i=1; i<this.seed.length; i++) {
-    let distsq = sqr(pt[0]-this.seed[i][0]) + sqr(pt[1]-this.seed[i][1]);
+  let clDistSq = sqr(pt[0] - this.seed[0][0]) + sqr(pt[1] - this.seed[0][1]);
+  for (let i = 1; i < this.seed.length; i++) {
+    let distsq = sqr(pt[0] - this.seed[i][0]) + sqr(pt[1] - this.seed[i][1]);
     if (distsq < clDistSq) {
       clIdx = i;
       clDistSq = distsq;
@@ -209,16 +221,23 @@ FractalDraw.prototype.closestPt = function(pt) {
   }
 };
 
+/** Distance between point and line
+@param {point} pt - A point
+@param {point} e1 - First point in segment
+@param {point} e2 - Second point in segment
+@return {double} - The distance
+*/
 function ptlsdist2(pt, e1, e2) {
-  if ((e1[0]==e2[0]) && (e1[1] == e2[1])) {
-    return sqr(pt[0]-e1[0]) + (pt[1]-e1[1]);  // shouldn't happen?
+  if ((e1[0] == e2[0]) && (e1[1] == e2[1])) {
+    return sqr(pt[0] - e1[0]) + (pt[1] - e1[1]); // shouldn't happen?
   }
-  let seglen = sqr(e1[0]-e2[0]) + sqr(e1[1]-e2[1]);
-  let t = ((pt[0]-e1[0])*(e2[0]-e1[0]) + (pt[1]-e1[1])*(e2[1]-e1[1]))/seglen;
+  let seglen = sqr(e1[0] - e2[0]) + sqr(e1[1] - e2[1]);
+  let t = ((pt[0] - e1[0]) * (e2[0] - e1[0]) +
+           (pt[1] - e1[1]) * (e2[1] - e1[1])) / seglen;
   t = Math.max(0, Math.min(1, t)); // constrain to 0<=t<=1 (on segment)
-  let lx = e1[0] + t*(e2[0]-e1[0]);
-  let ly = e1[1] + t*(e2[1]-e1[1]);
-  return sqr(pt[0]-lx) + sqr(pt[1]-ly);
+  let lx = e1[0] + t * (e2[0] - e1[0]);
+  let ly = e1[1] + t * (e2[1] - e1[1]);
+  return sqr(pt[0] - lx) + sqr(pt[1] - ly);
 };
 
 FractalDraw.prototype.closestLn = function(pt) {
@@ -226,8 +245,8 @@ FractalDraw.prototype.closestLn = function(pt) {
 
   let clIdx = 0;
   let clDistSq = ptlsdist2(pt, this.seed[0], this.seed[1]);
-  for (let i=1; i<this.seed.length-1; i++) {
-    let distsq = ptlsdist2(pt, this.seed[i], this.seed[i+1]);
+  for (let i = 1; i < this.seed.length - 1; i++) {
+    let distsq = ptlsdist2(pt, this.seed[i], this.seed[i + 1]);
     if (distsq < clDistSq) {
       clIdx = i;
       clDistSq = distsq;
@@ -248,14 +267,14 @@ FractalDraw.prototype.clear = function() {
 
 FractalDraw.prototype.drawIt = function(levels) {
   if (this.currLevels != -1) {
-    this.levelButtons.children[this.currLevels-1].disabled = false;
+    this.levelButtons.children[this.currLevels - 1].disabled = false;
   }
   this.currLevels = levels;
-  this.levelButtons.children[levels-1].disabled = true;
+  this.levelButtons.children[levels - 1].disabled = true;
   this.clear();
   this.ctx.lineWidth = this.drawThickness.value;
   this.ctx.strokeStyle = 'black';
-  this.basedraw(this.seed[0], this.seed[this.seed.length-1], 1, levels);
+  this.basedraw(this.seed[0], this.seed[this.seed.length - 1], 1, levels);
   this.ctx.closePath();
 };
 
@@ -270,11 +289,11 @@ FractalDraw.prototype.getCtrls = function() {
 FractalDraw.prototype.enableMode = function() {
   this.ctrlPanel.style.display = 'inline-block';
   this.drawIt(this.currLevels);
-  let dim = Math.round(this.getDim()*1000.0)/1000.0;
+  let dim = Math.round(this.getDim() * 1000.0) / 1000.0;
   if (dim == -1) {
     this.dimInfo.innerHTML = 'Dim=?';
   } else {
-    this.dimInfo.innerHTML = 'Dim='+dim;
+    this.dimInfo.innerHTML = 'Dim=' + dim;
   }
 };
 
@@ -282,15 +301,15 @@ FractalDraw.prototype.disableMode = function() {
   this.ctrlPanel.style.display = 'none';
 };
 
-FractalDraw.prototype.drawSeed = function(drawBaseLine=false, without = -1) {
+FractalDraw.prototype.drawSeed = function(drawBaseLine = false, without = -1) {
   this.clear();
   if (this.seed.length > 1) {
-    for (let i=1; i<this.seed.length; i++) {
-      if ((i-1 != without) && (i != without)) {
+    for (let i = 1; i < this.seed.length; i++) {
+      if ((i - 1 != without) && (i != without)) {
         this.ctx.beginPath();
         this.ctx.lineWidth = SeedEditor.SegType[this.seed[i][2]].width;
         this.ctx.strokeStyle = SeedEditor.SegType[this.seed[i][2]].color;
-        this.ctx.moveTo(this.seed[i-1][0], this.seed[i-1][1]);
+        this.ctx.moveTo(this.seed[i - 1][0], this.seed[i - 1][1]);
         this.ctx.lineTo(this.seed[i][0], this.seed[i][1]);
         this.ctx.stroke();
       }
@@ -299,10 +318,10 @@ FractalDraw.prototype.drawSeed = function(drawBaseLine=false, without = -1) {
       this.ctx.beginPath();
       this.ctx.lineWidth = 1;
       this.ctx.strokeStyle = 'black';
-      this.ctx.setLineDash([10,10]);
+      this.ctx.setLineDash([10, 10]);
       this.ctx.moveTo(this.seed[0][0], this.seed[0][1]);
-      this.ctx.lineTo(this.seed[this.seed.length-1][0],
-                      this.seed[this.seed.length-1][1]);
+      this.ctx.lineTo(this.seed[this.seed.length - 1][0],
+        this.seed[this.seed.length - 1][1]);
       this.ctx.stroke();
       this.ctx.setLineDash([]);
     }
@@ -311,30 +330,30 @@ FractalDraw.prototype.drawSeed = function(drawBaseLine=false, without = -1) {
 
 FractalDraw.prototype.basedraw = function(start, end, hflip, level) {
   if (this.seed.length < 2) return;
-  let dx = this.seed[this.seed.length-1][0]-this.seed[0][0];
-  let dy = this.seed[this.seed.length-1][1]-this.seed[0][1];
-  let blLen = dx*dx + dy*dy;
-  let dx1 = end[0]-start[0];
-  let dy1 = end[1]-start[1];
-  if (dx1*dx1 + dy1*dy1 < 1.0) {
+  let dx = this.seed[this.seed.length - 1][0] - this.seed[0][0];
+  let dy = this.seed[this.seed.length - 1][1] - this.seed[0][1];
+  let blLen = dx * dx + dy * dy;
+  let dx1 = end[0] - start[0];
+  let dy1 = end[1] - start[1];
+  if (dx1 * dx1 + dy1 * dy1 < 1.0) {
     this.ctx.beginPath();
-    this.ctx.moveTo(start[0],start[1]);
-    this.ctx.lineTo(end[0],end[1]);
+    this.ctx.moveTo(start[0], start[1]);
+    this.ctx.lineTo(end[0], end[1]);
     this.ctx.stroke();
     return;
   }
-  let a = (dx*dx1 + hflip*dy*dy1)/blLen;
-  let b = (dx1*dy - hflip*dx*dy1)/blLen;
-  let tx = start[0] - a*this.seed[0][0] - b*this.seed[0][1];
-  let c = (dx*dy1 - hflip*dy*dx1)/blLen;
-  let d = (dy1*dy + hflip*dx*dx1)/blLen;
-  let ty = start[1] - c*this.seed[0][0] - d*this.seed[0][1];
-  let xx = a*this.seed[0][0] + b*this.seed[0][1] + tx;
-  let yy = c*this.seed[0][0] + d*this.seed[0][1] + ty;
+  let a = (dx * dx1 + hflip * dy * dy1) / blLen;
+  let b = (dx1 * dy - hflip * dx * dy1) / blLen;
+  let tx = start[0] - a * this.seed[0][0] - b * this.seed[0][1];
+  let c = (dx * dy1 - hflip * dy * dx1) / blLen;
+  let d = (dy1 * dy + hflip * dx * dx1) / blLen;
+  let ty = start[1] - c * this.seed[0][0] - d * this.seed[0][1];
+  let xx = a * this.seed[0][0] + b * this.seed[0][1] + tx;
+  let yy = c * this.seed[0][0] + d * this.seed[0][1] + ty;
 
-  for (let i = 1; i<this.seed.length; i++) {
-    let xn = a*this.seed[i][0] + b*this.seed[i][1] + tx;
-    let yn = c*this.seed[i][0] + d*this.seed[i][1] + ty;
+  for (let i = 1; i < this.seed.length; i++) {
+    let xn = a * this.seed[i][0] + b * this.seed[i][1] + tx;
+    let yn = c * this.seed[i][0] + d * this.seed[i][1] + ty;
     if (this.seed[i][2] != 5) {
       if ((level == 1) || (this.seed[i][2] == 4)) {
         this.ctx.beginPath();
@@ -342,13 +361,13 @@ FractalDraw.prototype.basedraw = function(start, end, hflip, level) {
         this.ctx.lineTo(xn, yn);
         this.ctx.stroke();
       } else if (this.seed[i][2] == 1) {
-        this.basedraw([xx, yy], [xn,yn], -hflip, level-1);
+        this.basedraw([xx, yy], [xn, yn], -hflip, level - 1);
       } else if (this.seed[i][2] == 2) {
-        this.basedraw([xn, yn], [xx,yy], -hflip, level-1);
+        this.basedraw([xn, yn], [xx, yy], -hflip, level - 1);
       } else if (this.seed[i][2] == 3) {
-        this.basedraw([xn, yn], [xx,yy], hflip, level-1);
+        this.basedraw([xn, yn], [xx, yy], hflip, level - 1);
       } else {
-        this.basedraw([xx,yy], [xn, yn], hflip, level-1);
+        this.basedraw([xx, yy], [xn, yn], hflip, level - 1);
       }
     }
     xx = xn;
@@ -356,12 +375,15 @@ FractalDraw.prototype.basedraw = function(start, end, hflip, level) {
   }
 };
 
-
-function SeedEditor (fractalDraw, enabled) {
+/** The base seed editor class
+@param {canvas} fractalDraw - the canvas on which stuff needs to be drawn
+@param {boolean} enabled - if the drawing should be shown
+*/
+function SeedEditor(fractalDraw, enabled) {
   this.fractalDraw = fractalDraw;
   let drawingcanvas = fractalDraw.getCanvas();
   let drawingz = parseInt(drawingcanvas.style['z-index']);
-  drawingcanvas.style['z-index'] = drawingz+1;
+  drawingcanvas.style['z-index'] = drawingz + 1;
 
   this.bgcanvas = document.createElement('canvas');
   this.bgcanvas.id = 'fraceditbg';
@@ -380,7 +402,7 @@ function SeedEditor (fractalDraw, enabled) {
   this.workcanvas.width = drawingcanvas.width;
   this.workcanvas.height = drawingcanvas.height;
   this.workcanvas.style.cssText = drawingcanvas.style.cssText;
-  this.workcanvas.style['z-index'] = drawingz+2;
+  this.workcanvas.style['z-index'] = drawingz + 2;
   if (!enabled) {
     this.workcanvas.style['display'] = 'none';
   }
@@ -389,7 +411,7 @@ function SeedEditor (fractalDraw, enabled) {
   this.workrect = this.workcanvas.getBoundingClientRect();
   this.workcanvas.seedEditor = this;
 
-  this.gridhighlight = [-1,-1];
+  this.gridhighlight = [-1, -1];
   this.workcanvas.onmousemove = this.mouseMove.bind(this);
   this.workcanvas.onclick = this.mouseClick.bind(this);
   this.workcanvas.ondblclick = this.mouseDblClick.bind(this);
@@ -414,12 +436,12 @@ function SeedEditor (fractalDraw, enabled) {
   let panelTD = document.createElement('td');
   this.currentSegType = -1;
   this.segTypeBtn = [];
-  for (let i=0; i<SeedEditor.SegType.length; i++) {
+  for (let i = 0; i < SeedEditor.SegType.length; i++) {
     let typeBtn = document.createElement('button');
     //  typeBtn.innerHTML = SeedEditor.SegType[i].name;
-    typeBtn.innerHTML = '<img src="button' + (i+1) + '.png" />';
+    typeBtn.innerHTML = '<img src="button' + (i + 1) + '.png" />';
     typeBtn.className = 'btn btn-secondary btn-sm';
-    typeBtn.style.marginLeft='4px';
+    typeBtn.style.marginLeft = '4px';
     typeBtn.onclick = function(type) {
       this.setSegType(type);
     }.bind(this, i);
@@ -491,12 +513,13 @@ SeedEditor.prototype.addStdSeed = function(name) {
   if (seedInfo != undefined) {
     // Adjust to JS canvas coordinates - do we need this?
     let adjSeed = [];
-    for (let i=0; i<seedInfo.seed.length; i++) {
-      adjSeed.push([seedInfo.seed[i][0]+0.5,seedInfo.seed[i][1]+0.5,
-                    seedInfo.seed[i][2]]);
+    for (let i = 0; i < seedInfo.seed.length; i++) {
+      adjSeed.push([seedInfo.seed[i][0] + 0.5, seedInfo.seed[i][1] + 0.5,
+        seedInfo.seed[i][2],
+      ]);
     }
     // Nudging thickness here, because I like the narrower lines...
-    let thickness = Math.max(seedInfo.thickness-1,1);
+    let thickness = Math.max(seedInfo.thickness - 1, 1);
     this.addSeed(name, seedInfo.fullname, adjSeed, thickness);
   }
 };
@@ -504,7 +527,7 @@ SeedEditor.prototype.addStdSeed = function(name) {
 SeedEditor.prototype.setSeedByName = function(seedName) {
   let findName = seedName.toLowerCase();
   let seeds = this.picker.children;
-  for (let i=0; i<seeds.length; i++) {
+  for (let i = 0; i < seeds.length; i++) {
     if (findName == seeds[i].dataset['name']) {
       this.picker.selectedIndex = i;
       this.pickSeed();
@@ -552,40 +575,38 @@ SeedEditor.prototype.setSegType = function(type) {
   }
 };
 
-SeedEditor.SegType = [
-  {
-    name: 'Reg',
-    color: '#e41a1c',
-    width: 2
-  },{
-    name: 'Flip',
-    color: '#377eb8',
-    width: 2
-  },{
-    name: 'Disabled1',
-    color: '#ff7f00',
-    width: 2
-  },{
-    name: 'Disabled2',
-    color: '#984ea3',
-    width: 2
-  },{
-    name: 'No Recurse',
-    color: '#4daf4a',
-    width: 2
-  },{
-    name: 'No Line',
-    color: '#808080',
-    width: 1
-  }
-];
+SeedEditor.SegType = [{
+  name: 'Reg',
+  color: '#e41a1c',
+  width: 2,
+}, {
+  name: 'Flip',
+  color: '#377eb8',
+  width: 2,
+}, {
+  name: 'Disabled1',
+  color: '#ff7f00',
+  width: 2,
+}, {
+  name: 'Disabled2',
+  color: '#984ea3',
+  width: 2,
+}, {
+  name: 'No Recurse',
+  color: '#4daf4a',
+  width: 2,
+}, {
+  name: 'No Line',
+  color: '#808080',
+  width: 1,
+}];
 
 SeedEditor.EDITMODE = {
-  INIT : 0,
-  DEFINING : 1,
+  INIT: 0,
+  DEFINING: 1,
   DONE: 2,
-  MOVEPT : 3,
-  LOCKED : 4
+  MOVEPT: 3,
+  LOCKED: 4,
 };
 
 SeedEditor.prototype.setupBackground = function() {
@@ -593,13 +614,13 @@ SeedEditor.prototype.setupBackground = function() {
   bgctx.strokeStyle = '#a0a0a0';
   bgctx.lineWidth = 1;
   // center is (20.5,20.5) - go 18-23
-  for (let x = 1; x < Math.floor(this.bgcanvas.width/20); x++) {
-    for (let y = 1; y < Math.floor(this.bgcanvas.height/20); y++) {
+  for (let x = 1; x < Math.floor(this.bgcanvas.width / 20); x++) {
+    for (let y = 1; y < Math.floor(this.bgcanvas.height / 20); y++) {
       bgctx.beginPath();
-      bgctx.moveTo(x*20-2,y*20+0.5);
-      bgctx.lineTo(x*20+3,y*20+0.5);
-      bgctx.moveTo(x*20+0.5,y*20-2);
-      bgctx.lineTo(x*20+0.5,y*20+3);
+      bgctx.moveTo(x * 20 - 2, y * 20 + 0.5);
+      bgctx.lineTo(x * 20 + 3, y * 20 + 0.5);
+      bgctx.moveTo(x * 20 + 0.5, y * 20 - 2);
+      bgctx.lineTo(x * 20 + 0.5, y * 20 + 3);
       bgctx.stroke();
     }
   }
@@ -610,7 +631,7 @@ SeedEditor.prototype.enableMode = function() {
   this.workcanvas.style.display = 'inline';
   this.ctrlPanel.style.display = 'inline-block';
   if ((this.editMode == SeedEditor.EDITMODE.DONE) ||
-      (this.editMode == SeedEditor.EDITMODE.LOCKED)) {
+    (this.editMode == SeedEditor.EDITMODE.LOCKED)) {
     this.fractalDraw.drawSeed(true);
   } else {
     this.fractalDraw.drawSeed(false);
@@ -636,22 +657,22 @@ SeedEditor.prototype.drawWork = function() {
   if (this.anchor1 != null) {
     this.workctx.beginPath();
     this.workctx.strokeStyle = SeedEditor.SegType[this.anchor1[2]].color;
-    this.workctx.moveTo(this.anchor1[0],this.anchor1[1]);
-    this.workctx.lineTo(this.mouseX, this.mouseY)
+    this.workctx.moveTo(this.anchor1[0], this.anchor1[1]);
+    this.workctx.lineTo(this.mouseX, this.mouseY);
     this.workctx.stroke();
   }
   if (this.anchor2 != null) {
     this.workctx.beginPath();
     this.workctx.strokeStyle = SeedEditor.SegType[this.anchor2[2]].color;
-    this.workctx.moveTo(this.anchor2[0],this.anchor2[1]);
-    this.workctx.lineTo(this.mouseX, this.mouseY)
+    this.workctx.moveTo(this.anchor2[0], this.anchor2[1]);
+    this.workctx.lineTo(this.mouseX, this.mouseY);
     this.workctx.stroke();
   }
 
   if ((this.gridhighlight[0] != -1) && (this.gridhighlight[1] != -1)) {
     this.workctx.beginPath();
     this.workctx.arc(this.gridhighlight[0], this.gridhighlight[1],
-		     3.5, 0, 6.28);
+      3.5, 0, 6.28);
     this.workctx.fill();
   }
 };
@@ -675,8 +696,8 @@ SeedEditor.prototype.getMousePos = function(evt) {
   this.rawX = evt.clientX - this.workrect.left;
   this.rawY = evt.clientY - this.workrect.top;
   if (this.snapBox.checked) {
-    this.mouseX = 20*Math.round(this.rawX/20.0)+0.5;
-    this.mouseY = 20*Math.round(this.rawY/20.0)+0.5;
+    this.mouseX = 20 * Math.round(this.rawX / 20.0) + 0.5;
+    this.mouseY = 20 * Math.round(this.rawY / 20.0) + 0.5;
   } else {
     this.mouseX = this.rawX;
     this.mouseY = this.rawY;
@@ -685,13 +706,13 @@ SeedEditor.prototype.getMousePos = function(evt) {
 
 SeedEditor.prototype.mouseMove = function(evt) {
   if ((this.editMode == SeedEditor.EDITMODE.DONE) ||
-      (this.editMode == SeedEditor.EDITMODE.LOCKED)) {
+    (this.editMode == SeedEditor.EDITMODE.LOCKED)) {
     return;
   }
 
   this.getMousePos(evt);
   if ((this.mouseX != this.gridhighlight[0]) ||
-      (this.mouseY != this.gridhighlight[1])) {
+    (this.mouseY != this.gridhighlight[1])) {
     this.gridhighlight = [this.mouseX, this.mouseY];
     this.drawWork();
   }
@@ -701,51 +722,57 @@ SeedEditor.prototype.mouseClick = function(evt) {
   let seed = this.fractalDraw.seed; // Better way to do this?
   this.getMousePos(evt);
   if (this.editMode == SeedEditor.EDITMODE.DEFINING) {
-    this.fractalDraw.addToSeed([this.mouseX,this.mouseY,this.currentSegType]);
+    this.fractalDraw.addToSeed([this.mouseX, this.mouseY, this.currentSegType]);
     this.fractalDraw.drawSeed(false);
-    this.anchor1 = [this.mouseX,this.mouseY,this.currentSegType];
+    this.anchor1 = [this.mouseX, this.mouseY, this.currentSegType];
   } else if (this.editMode == SeedEditor.EDITMODE.INIT) {
-    this.fractalDraw.setSeed([ [this.mouseX,this.mouseY,0] ]);
-    this.anchor1 = [this.mouseX,this.mouseY,this.currentSegType];
+    this.fractalDraw.setSeed([
+      [this.mouseX, this.mouseY, 0],
+    ]);
+    this.anchor1 = [this.mouseX, this.mouseY, this.currentSegType];
     this.setMode(SeedEditor.EDITMODE.DEFINING);
   } else if ((this.editMode == SeedEditor.EDITMODE.DONE) ||
-             (this.editMode == SeedEditor.EDITMODE.LOCKED)) {
+    (this.editMode == SeedEditor.EDITMODE.LOCKED)) {
     if (this.editMode == SeedEditor.EDITMODE.LOCKED) {
       this.editCopy();
       this.picker.selectedIndex = 0;
       this.setMode(SeedEditor.EDITMODE.DONE);
     }
 
-    let closestPt = this.fractalDraw.closestPt([this.rawX,this.rawY]);
+    let closestPt = this.fractalDraw.closestPt([this.rawX, this.rawY]);
     if (closestPt >= 0) {
       if (closestPt == 0) {
-        this.anchor1 = [seed[1][0],seed[1][1],seed[1][2]];
+        this.anchor1 = [seed[1][0], seed[1][1], seed[1][2]];
       } else {
-        this.anchor1 = [seed[closestPt-1][0],
-			seed[closestPt-1][1],
-			seed[closestPt][2]];
-        if (closestPt < seed.length-1) {
-          this.anchor2 = [seed[closestPt+1][0],
-			  seed[closestPt+1][1],
-			  seed[closestPt+1][2]];
-	}
+        this.anchor1 = [seed[closestPt - 1][0],
+          seed[closestPt - 1][1],
+          seed[closestPt][2],
+        ];
+        if (closestPt < seed.length - 1) {
+          this.anchor2 = [seed[closestPt + 1][0],
+            seed[closestPt + 1][1],
+            seed[closestPt + 1][2],
+          ];
+        }
       }
       this.movePt = closestPt;
-      this.fractalDraw.drawSeed(false,this.movePt);
-      this.gridhighlight = [this.mouseX,this.mouseY];
+      this.fractalDraw.drawSeed(false, this.movePt);
+      this.gridhighlight = [this.mouseX, this.mouseY];
       this.drawWork();
       this.setMode(SeedEditor.EDITMODE.MOVEPT);
     } else {
-      let closestLn = this.fractalDraw.closestLn([this.rawX,this.rawY]);
+      let closestLn = this.fractalDraw.closestLn([this.rawX, this.rawY]);
       if (closestLn >= 0) {
-        seed[closestLn+1][2] = this.currentSegType;
+        seed[closestLn + 1][2] = this.currentSegType;
         this.fractalDraw.drawSeed(true);
       }
     }
   } else if (this.editMode == SeedEditor.EDITMODE.MOVEPT) {
     if (this.movePt >= 0) {
       this.fractalDraw.changeSeedPt(this.movePt,
-                                  [this.mouseX, this.mouseY, this.anchor1[2]]);
+                                    [this.mouseX,
+                                      this.mouseY,
+                                      this.anchor1[2]]);
       this.fractalDraw.clear();
       this.fractalDraw.drawSeed(true);
       this.clearWork();
@@ -761,7 +788,7 @@ SeedEditor.prototype.keyPress = function(evt) {
   if ((charCode == 46) || (charCode == 8)) {
     // Delete (or backspace)
     if ((this.editMode == SeedEditor.EDITMODE.MOVEPT) &&
-	(this.fractalDraw.seed.length > 2)) {
+      (this.fractalDraw.seed.length > 2)) {
       this.fractalDraw.deleteFromSeed(this.movePt);
       this.fractalDraw.clear();
       this.fractalDraw.drawSeed(true);
@@ -776,27 +803,28 @@ SeedEditor.prototype.keyPress = function(evt) {
 SeedEditor.prototype.mouseDblClick = function(evt) {
   if (this.editMode == SeedEditor.EDITMODE.DEFINING) {
     this.getMousePos(evt);
-    this.fractalDraw.addToSeed([this.mouseX,this.mouseY,this.currentSegType]);
+    this.fractalDraw.addToSeed([this.mouseX, this.mouseY, this.currentSegType]);
     this.fractalDraw.clear();
     this.fractalDraw.drawSeed(true);
     this.clearWork();
     this.anchor1 = this.anchor2 = null;
     this.setMode(SeedEditor.EDITMODE.DONE);
   } else if (this.editMode == SeedEditor.EDITMODE.DONE) {
-    let closestPt = this.fractalDraw.closestPt([this.rawX,this.rawY]);
-    let closestLn = this.fractalDraw.closestLn([this.rawX,this.rawY]);
+    let closestPt = this.fractalDraw.closestPt([this.rawX, this.rawY]);
+    let closestLn = this.fractalDraw.closestLn([this.rawX, this.rawY]);
     let seed = this.fractalDraw.seed;
     if ((closestPt == -1) && (closestLn >= 0)) {
       this.fractalDraw.insertInSeed([this.mouseX,
-				     this.mouseY,seed[closestLn+1][2]],
-				    closestLn+1);
+          this.mouseY, seed[closestLn + 1][2],
+        ],
+        closestLn + 1);
 
       this.anchor1 = seed[closestLn].slice();
-      this.anchor2 = seed[closestLn+2].slice();
+      this.anchor2 = seed[closestLn + 2].slice();
       this.anchor1[2] = this.anchor2[2];
-      this.movePt = closestLn+1;
-      this.fractalDraw.drawSeed(false,this.movePt);
-      this.gridhighlight = [this.mouseX,this.mouseY];
+      this.movePt = closestLn + 1;
+      this.fractalDraw.drawSeed(false, this.movePt);
+      this.gridhighlight = [this.mouseX, this.mouseY];
       this.drawWork();
       this.setMode(SeedEditor.EDITMODE.MOVEPT);
     }
@@ -809,467 +837,808 @@ SeedEditor.StdSeeds = {
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 3,
-    seed: [[260.0,180.0,0],[280.0,220.0,5],[260.0,120.0,5],
-           [260.0,20.0,4],[380.0,20.0,4],[380.0,120.0,4],[480.0,120.0,4],
-           [480.0,220.0,4],[380.0,220.0,4],[380.0,300.0,4],
-           [380.0,320.0,4],[260.0,320.0,4],[260.0,220.0,4],
-           [160.0,220.0,4],[160.0,120.0,4],[260.0,120.0,4],
-           [300.0,180.0,5],[340.0,180.0,0],[380.0,180.0,5]]
+    seed: [
+      [260.0, 180.0, 0],
+      [280.0, 220.0, 5],
+      [260.0, 120.0, 5],
+      [260.0, 20.0, 4],
+      [380.0, 20.0, 4],
+      [380.0, 120.0, 4],
+      [480.0, 120.0, 4],
+      [480.0, 220.0, 4],
+      [380.0, 220.0, 4],
+      [380.0, 300.0, 4],
+      [380.0, 320.0, 4],
+      [260.0, 320.0, 4],
+      [260.0, 220.0, 4],
+      [160.0, 220.0, 4],
+      [160.0, 120.0, 4],
+      [260.0, 120.0, 4],
+      [300.0, 180.0, 5],
+      [340.0, 180.0, 0],
+      [380.0, 180.0, 5],
+    ],
   },
   'baila': {
     fullname: 'Ba-ila',
     thickness: 2.0,
     thicknessType: 1,
     itNumber: 3,
-    seed: [[210.0,284.0,0],[210.0,187.07369995117188,5],
-           [210.0,200.80044555664062,4],
-           [216.86341857910156,221.39060974121094,4],
-           [223.726806640625,235.117431640625,0],
-           [237.4535369873047,248.84420776367188,0],
-           [251.1803436279297,262.5709533691406,0],
-           [278.6339111328125,269.434326171875,0],
-           [312.9508361816406,276.2977294921875,0],
-           [354.13116455078125,276.2977294921875,0],
-           [395.3115234375,269.434326171875,0],
-           [429.6284484863281,248.84420776367188,0],
-           [457.0820617675781,215.213623046875,0],
-           [469.4361877441406,171.97422790527344,0],
-           [469.4361877441406,122.55779266357422,0],
-           [450.9050598144531,85.49552154541016,0],
-           [420.01971435546875,60.787296295166016,0],
-           [389.1344909667969,48.43317794799805,0],
-           [358.2492370605469,42.25618362426758,0],
-           [327.36395263671875,42.25618362426758,0],
-           [296.47869873046875,48.43317794799805,0],
-           [271.7704772949219,60.787296295166016,0],
-           [253.23934936523438,73.14141845703125,0],
-           [234.7082061767578,85.49552154541016,0],
-           [222.3541259765625,97.8495864868164,0],
-           [216.1770477294922,110.2037124633789,0],
-           [210.0,128.73486328125,4],[210.0,139.0299072265625,4],
-           [374.7213439941406,180.21029663085938,5],
-           [374.7213439941406,118.43974304199219,0],
-           [210.0,32.34235382080078,5]]
+    seed: [
+      [210.0, 284.0, 0],
+      [210.0, 187.07369995117188, 5],
+      [210.0, 200.80044555664062, 4],
+      [216.86341857910156, 221.39060974121094, 4],
+      [223.726806640625, 235.117431640625, 0],
+      [237.4535369873047, 248.84420776367188, 0],
+      [251.1803436279297, 262.5709533691406, 0],
+      [278.6339111328125, 269.434326171875, 0],
+      [312.9508361816406, 276.2977294921875, 0],
+      [354.13116455078125, 276.2977294921875, 0],
+      [395.3115234375, 269.434326171875, 0],
+      [429.6284484863281, 248.84420776367188, 0],
+      [457.0820617675781, 215.213623046875, 0],
+      [469.4361877441406, 171.97422790527344, 0],
+      [469.4361877441406, 122.55779266357422, 0],
+      [450.9050598144531, 85.49552154541016, 0],
+      [420.01971435546875, 60.787296295166016, 0],
+      [389.1344909667969, 48.43317794799805, 0],
+      [358.2492370605469, 42.25618362426758, 0],
+      [327.36395263671875, 42.25618362426758, 0],
+      [296.47869873046875, 48.43317794799805, 0],
+      [271.7704772949219, 60.787296295166016, 0],
+      [253.23934936523438, 73.14141845703125, 0],
+      [234.7082061767578, 85.49552154541016, 0],
+      [222.3541259765625, 97.8495864868164, 0],
+      [216.1770477294922, 110.2037124633789, 0],
+      [210.0, 128.73486328125, 4],
+      [210.0, 139.0299072265625, 4],
+      [374.7213439941406, 180.21029663085938, 5],
+      [374.7213439941406, 118.43974304199219, 0],
+      [210.0, 32.34235382080078, 5],
+    ],
   },
   'blanket': {
     fullname: 'Fulani blanket',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 3,
-    seed: [[240.0,160.0,0],[170.0,160.0,5],[130.0,220.0,4],
-           [90.0,160.0,4],[130.0,100.0,4],[170.0,160.0,4],[50.0,100.0,5],
-           [10.0,160.0,4],[50.0,220.0,4],[90.0,160.0,4],[50.0,100.0,4],
-           [280.0,120.0,5],[330.0,120.0,0],[280.0,200.0,5],
-           [330.0,200.0,0],[430.0,160.0,5],[470.0,220.0,4],
-           [510.0,160.0,4],[550.0,220.0,4],[590.0,160.0,4],
-           [550.0,100.0,4],[510.0,160.0,4],[470.0,100.0,4],
-           [430.0,160.0,4],[360.0,160.0,5]]
+    seed: [
+      [240.0, 160.0, 0],
+      [170.0, 160.0, 5],
+      [130.0, 220.0, 4],
+      [90.0, 160.0, 4],
+      [130.0, 100.0, 4],
+      [170.0, 160.0, 4],
+      [50.0, 100.0, 5],
+      [10.0, 160.0, 4],
+      [50.0, 220.0, 4],
+      [90.0, 160.0, 4],
+      [50.0, 100.0, 4],
+      [280.0, 120.0, 5],
+      [330.0, 120.0, 0],
+      [280.0, 200.0, 5],
+      [330.0, 200.0, 0],
+      [430.0, 160.0, 5],
+      [470.0, 220.0, 4],
+      [510.0, 160.0, 4],
+      [550.0, 220.0, 4],
+      [590.0, 160.0, 4],
+      [550.0, 100.0, 4],
+      [510.0, 160.0, 4],
+      [470.0, 100.0, 4],
+      [430.0, 160.0, 4],
+      [360.0, 160.0, 5],
+    ],
   },
   'bullhorn': {
     fullname: 'Ghanian bull horn',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 4,
-    seed: [[220.0,200.0,0],[255.0,170.0,5],[270.0,180.0,4],
-           [296.0,198.0,4],[300.0,206.0,4],[298.0,219.0,4],
-           [291.0,230.0,4],[277.0,234.0,4],[265.0,232.0,4],
-           [254.0,229.0,4],[242.0,221.0,4],[228.0,208.0,4],
-           [222.0,200.0,4],[215.0,183.0,4],[210.0,170.0,4],
-           [209.0,154.0,4],[244.0,156.0,0],[255.0,170.0,4],
-           [220.0,200.0,5],[258.0,171.0,5]]
+    seed: [
+      [220.0, 200.0, 0],
+      [255.0, 170.0, 5],
+      [270.0, 180.0, 4],
+      [296.0, 198.0, 4],
+      [300.0, 206.0, 4],
+      [298.0, 219.0, 4],
+      [291.0, 230.0, 4],
+      [277.0, 234.0, 4],
+      [265.0, 232.0, 4],
+      [254.0, 229.0, 4],
+      [242.0, 221.0, 4],
+      [228.0, 208.0, 4],
+      [222.0, 200.0, 4],
+      [215.0, 183.0, 4],
+      [210.0, 170.0, 4],
+      [209.0, 154.0, 4],
+      [244.0, 156.0, 0],
+      [255.0, 170.0, 4],
+      [220.0, 200.0, 5],
+      [258.0, 171.0, 5],
+    ],
   },
   'cantorpaper': {
     fullname: 'cantorpaper',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 3,
-    seed: [[220.0,161.0,0],[240.0,81.0,5],[260.0,81.0,5],[320.0,81.0,0],
-           [340.0,81.0,5],[240.0,81.0,4],[360.0,161.0,5],[220.0,161.0,4],
-           [260.0,241.0,5],[320.0,241.0,0],[340.0,241.0,5],
-           [240.0,241.0,4],[360.0,161.0,5]]
+    seed: [
+      [220.0, 161.0, 0],
+      [240.0, 81.0, 5],
+      [260.0, 81.0, 5],
+      [320.0, 81.0, 0],
+      [340.0, 81.0, 5],
+      [240.0, 81.0, 4],
+      [360.0, 161.0, 5],
+      [220.0, 161.0, 4],
+      [260.0, 241.0, 5],
+      [320.0, 241.0, 0],
+      [340.0, 241.0, 5],
+      [240.0, 241.0, 4],
+      [360.0, 161.0, 5],
+    ],
   },
   'carpet': {
     fullname: 'Sierpinski Carpet',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 3,
-    seed: [[200.0,300.0,0],[238.58258056640625,197.11302185058594,5],
-           [238.58258056640625,94.22604370117188,4],
-           [341.4696044921875,94.22604370117188,4],
-           [341.4696044921875,197.11302185058594,4],
-           [238.58258056640625,197.11302185058594,4],
-           [252.06201171875,194.14932250976562,5],
-           [238.58258056640625,197.11302185058594,5],
-           [238.58258056640625,158.53041076660156,0],
-           [238.58258056640625,132.80865478515625,5],
-           [238.58258056640625,94.22604370117188,0],
-           [277.16522216796875,94.22604370117188,0],
-           [302.8869934082031,94.22604370117188,5],
-           [341.4696044921875,94.22604370117188,0],
-           [341.4696044921875,132.80865478515625,0],
-           [341.4696044921875,158.53041076660156,5],
-           [341.4696044921875,197.11302185058594,0],
-           [302.8869934082031,197.11302185058594,0],
-           [277.16522216796875,197.11302185058594,5],
-           [238.58258056640625,197.11302185058594,0],
-           [380.0522155761719,300.0,5]]
+    seed: [
+      [200.0, 300.0, 0],
+      [238.58258056640625, 197.11302185058594, 5],
+      [238.58258056640625, 94.22604370117188, 4],
+      [341.4696044921875, 94.22604370117188, 4],
+      [341.4696044921875, 197.11302185058594, 4],
+      [238.58258056640625, 197.11302185058594, 4],
+      [252.06201171875, 194.14932250976562, 5],
+      [238.58258056640625, 197.11302185058594, 5],
+      [238.58258056640625, 158.53041076660156, 0],
+      [238.58258056640625, 132.80865478515625, 5],
+      [238.58258056640625, 94.22604370117188, 0],
+      [277.16522216796875, 94.22604370117188, 0],
+      [302.8869934082031, 94.22604370117188, 5],
+      [341.4696044921875, 94.22604370117188, 0],
+      [341.4696044921875, 132.80865478515625, 0],
+      [341.4696044921875, 158.53041076660156, 5],
+      [341.4696044921875, 197.11302185058594, 0],
+      [302.8869934082031, 197.11302185058594, 0],
+      [277.16522216796875, 197.11302185058594, 5],
+      [238.58258056640625, 197.11302185058594, 0],
+      [380.0522155761719, 300.0, 5],
+    ],
   },
   'chaetophora': {
     fullname: 'Chaetophora',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 5,
-    seed: [[249.0,322.0,0],[254.1637420654297,319.21954345703125,5],
-           [264.9272766113281,245.37684631347656,4],
-           [243.8362274169922,319.21954345703125,5],
-           [252.0132598876953,246.23777770996094,4],
-           [255.02651977539062,244.9463653564453,5],
-           [236.23672485351562,184.3251953125,1],
-           [207.3065948486328,245.58892822265625,5],
-           [261.4835510253906,245.37684631347656,5],
-           [286.0102233886719,194.520263671875,0],
-           [309.412841796875,245.58892822265625,5],
-           [258.3596496582031,245.58892822265625,5]]
+    seed: [
+      [249.0, 322.0, 0],
+      [254.1637420654297, 319.21954345703125, 5],
+      [264.9272766113281, 245.37684631347656, 4],
+      [243.8362274169922, 319.21954345703125, 5],
+      [252.0132598876953, 246.23777770996094, 4],
+      [255.02651977539062, 244.9463653564453, 5],
+      [236.23672485351562, 184.3251953125, 1],
+      [207.3065948486328, 245.58892822265625, 5],
+      [261.4835510253906, 245.37684631347656, 5],
+      [286.0102233886719, 194.520263671875, 0],
+      [309.412841796875, 245.58892822265625, 5],
+      [258.3596496582031, 245.58892822265625, 5],
+    ],
   },
   'cnegative': {
     fullname: 'Negative Feedback',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
-    seed: [[340.0,80.0,0],[320.0,80.0,0],[300.0,80.0,0],[280.0,80.0,0],
-           [260.0,80.0,0],[240.0,100.0,0],[240.0,120.0,0],
-           [240.0,140.0,0],[240.0,160.0,0],[240.0,180.0,0],
-           [240.0,200.0,0],[240.0,220.0,0],[260.0,240.0,0],
-           [280.0,240.0,0],[300.0,240.0,0],[320.0,240.0,0],
-           [340.0,240.0,0]]
+    seed: [
+      [340.0, 80.0, 0],
+      [320.0, 80.0, 0],
+      [300.0, 80.0, 0],
+      [280.0, 80.0, 0],
+      [260.0, 80.0, 0],
+      [240.0, 100.0, 0],
+      [240.0, 120.0, 0],
+      [240.0, 140.0, 0],
+      [240.0, 160.0, 0],
+      [240.0, 180.0, 0],
+      [240.0, 200.0, 0],
+      [240.0, 220.0, 0],
+      [260.0, 240.0, 0],
+      [280.0, 240.0, 0],
+      [300.0, 240.0, 0],
+      [320.0, 240.0, 0],
+      [340.0, 240.0, 0],
+    ],
   },
   'cpositive': {
     fullname: 'Positive Feedback',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
-    seed: [[340.0,100.0,0],[240.0,160.0,0],[340.0,240.0,0]]
+    seed: [
+      [340.0, 100.0, 0],
+      [240.0, 160.0, 0],
+      [340.0, 240.0, 0],
+    ],
   },
   'davincitree2': {
     fullname: 'Davinci Tree 2',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 2,
-    seed: [[240.0,320.0,0],[240.0,320.0,5],[240.0,230.0,4],
-           [260.0,210.0,0],[270.0,210.0,4],[290.0,230.0,0],
-           [290.0,320.0,4],[290.0,320.0,5]]
+    seed: [
+      [240.0, 320.0, 0],
+      [240.0, 320.0, 5],
+      [240.0, 230.0, 4],
+      [260.0, 210.0, 0],
+      [270.0, 210.0, 4],
+      [290.0, 230.0, 0],
+      [290.0, 320.0, 4],
+      [290.0, 320.0, 5],
+    ],
   },
   'davincitree3': {
     fullname: 'Davinci Tree 3',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 2,
-    seed: [[240.0,320.0,0],[240.0,320.0,5],[240.0,230.0,4],
-           [253.0,211.0,0],[277.0,211.0,0],[290.0,230.0,0],
-           [290.0,320.0,4],[290.0,320.0,5]]
+    seed: [
+      [240.0, 320.0, 0],
+      [240.0, 320.0, 5],
+      [240.0, 230.0, 4],
+      [253.0, 211.0, 0],
+      [277.0, 211.0, 0],
+      [290.0, 230.0, 0],
+      [290.0, 320.0, 4],
+      [290.0, 320.0, 5],
+    ],
   },
   'davincitree4': {
     fullname: 'Davinci Tree 4',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 2,
-    seed: [[240.0,320.0,0],[240.0,320.0,5],[240.0,232.24789428710938,4],
-           [246.3679962158203,213.5637969970703,0],
-           [264.8714294433594,206.16534423828125,0],
-           [283.6661376953125,214.4735107421875,0],
-           [288.75115966796875,232.24789428710938,0],
-           [288.75115966796875,320.0,4],[288.75115966796875,320.0,5]]
+    seed: [
+      [240.0, 320.0, 0],
+      [240.0, 320.0, 5],
+      [240.0, 232.24789428710938, 4],
+      [246.3679962158203, 213.5637969970703, 0],
+      [264.8714294433594, 206.16534423828125, 0],
+      [283.6661376953125, 214.4735107421875, 0],
+      [288.75115966796875, 232.24789428710938, 0],
+      [288.75115966796875, 320.0, 4],
+      [288.75115966796875, 320.0, 5],
+    ],
   },
   'dendrite': {
     fullname: 'Dendrite',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 4,
-    seed: [[260.0,288.0,0],[260.0,240.0,4],[300.0,200.0,5],
-           [260.0,240.0,5],[260.0,200.0,1],[260.0,186.0,1],
-           [236.0,228.0,5],[183.0,270.0,5],[227.0,220.0,5],
-           [260.0,240.0,4],[236.85000610351562,170.38999938964844,5],
-           [209.30999755859375,228.70999145507812,5],[260.0,240.0,5],
-           [280.0,231.0,4],[300.0,220.0,0],
-           [306.510009765625,228.70999145507812,5],[380.0,240.0,5],
-           [260.0,240.0,5]]
+    seed: [
+      [260.0, 288.0, 0],
+      [260.0, 240.0, 4],
+      [300.0, 200.0, 5],
+      [260.0, 240.0, 5],
+      [260.0, 200.0, 1],
+      [260.0, 186.0, 1],
+      [236.0, 228.0, 5],
+      [183.0, 270.0, 5],
+      [227.0, 220.0, 5],
+      [260.0, 240.0, 4],
+      [236.85000610351562, 170.38999938964844, 5],
+      [209.30999755859375, 228.70999145507812, 5],
+      [260.0, 240.0, 5],
+      [280.0, 231.0, 4],
+      [300.0, 220.0, 0],
+      [306.510009765625, 228.70999145507812, 5],
+      [380.0, 240.0, 5],
+      [260.0, 240.0, 5],
+    ],
   },
   'ethiopian2': {
     fullname: 'Ethiopian cross 2',
     thickness: 4.0,
     thicknessType: 0,
     itNumber: 3,
-    seed: [[461.0,160.0,0],[261.0,161.0,5],[341.0,81.0,0],[341.0,20.0,0],
-           [341.0,81.0,5],[421.0,161.0,0],[481.0,161.0,0],
-           [421.0,161.0,5],[341.0,241.0,0],[341.0,300.0,0],
-           [341.0,241.0,5],[261.0,161.0,0],[200.0,161.0,0],
-           [221.0,160.0,5]]
+    seed: [
+      [461.0, 160.0, 0],
+      [261.0, 161.0, 5],
+      [341.0, 81.0, 0],
+      [341.0, 20.0, 0],
+      [341.0, 81.0, 5],
+      [421.0, 161.0, 0],
+      [481.0, 161.0, 0],
+      [421.0, 161.0, 5],
+      [341.0, 241.0, 0],
+      [341.0, 300.0, 0],
+      [341.0, 241.0, 5],
+      [261.0, 161.0, 0],
+      [200.0, 161.0, 0],
+      [221.0, 160.0, 5],
+    ],
   },
   'ethiopian': {
     fullname: 'Ethiopian cross 1',
     thickness: 4.0,
     thicknessType: 0,
     itNumber: 3,
-    seed: [[460.0,181.0,0],[260.0,181.0,5],[340.0,101.0,0],
-           [340.0,61.0,0],[340.0,101.0,5],[420.0,181.0,0],
-           [460.0,181.0,0],[420.0,181.0,5],[340.0,261.0,0],
-           [340.0,301.0,0],[340.0,261.0,5],[260.0,181.0,0],
-           [220.0,181.0,0],[220.0,181.0,5]]
+    seed: [
+      [460.0, 181.0, 0],
+      [260.0, 181.0, 5],
+      [340.0, 101.0, 0],
+      [340.0, 61.0, 0],
+      [340.0, 101.0, 5],
+      [420.0, 181.0, 0],
+      [460.0, 181.0, 0],
+      [420.0, 181.0, 5],
+      [340.0, 261.0, 0],
+      [340.0, 301.0, 0],
+      [340.0, 261.0, 5],
+      [260.0, 181.0, 0],
+      [220.0, 181.0, 0],
+      [220.0, 181.0, 5],
+    ],
   },
   'fern': {
     fullname: 'Fern',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 9,
-    seed: [[100.0,238.0,0],[100.0,238.0,5],[200.0,158.0,4],
-           [280.0,38.0,0],[200.0,158.0,5],[500.0,138.0,0],
-           [200.0,158.0,5],[340.0,278.0,0],[500.0,138.0,5]]
+    seed: [
+      [100.0, 238.0, 0],
+      [100.0, 238.0, 5],
+      [200.0, 158.0, 4],
+      [280.0, 38.0, 0],
+      [200.0, 158.0, 5],
+      [500.0, 138.0, 0],
+      [200.0, 158.0, 5],
+      [340.0, 278.0, 0],
+      [500.0, 138.0, 5],
+    ],
   },
   'fractalspirals': {
     fullname: 'fractalspirals',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 9,
-    seed: [[280.0,280.0,0],[180.0,280.0,5],[180.0,180.0,4],
-           [260.0,180.0,5],[320.0,100.0,5],[360.0,180.0,0],
-           [320.0,180.0,5],[260.0,180.0,5]]
+    seed: [
+      [280.0, 280.0, 0],
+      [180.0, 280.0, 5],
+      [180.0, 180.0, 4],
+      [260.0, 180.0, 5],
+      [320.0, 100.0, 5],
+      [360.0, 180.0, 0],
+      [320.0, 180.0, 5],
+      [260.0, 180.0, 5],
+    ],
   },
   'ghanahorns': {
     fullname: 'ghanahorns',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 9,
-    seed: [[367.0,262.0,0],[418.2435302734375,218.07699584960938,5],
-           [440.2049865722656,232.71800231933594,4],
-           [478.2716369628906,259.07177734375,4],
-           [484.12799072265625,270.78460693359375,4],
-           [481.19976806640625,289.8179016113281,4],
-           [470.95111083984375,305.9230041503906,4],
-           [450.4537048339844,311.77935791015625,4],
-           [432.884521484375,308.8511962890625,4],
-           [416.77935791015625,304.4588928222656,4],
-           [399.2102355957031,292.74609375,4],
-           [378.7127685546875,273.71282958984375,4],
-           [369.92822265625,262.0,4],
-           [359.67950439453125,237.11032104492188,4],
-           [352.3590087890625,218.07699584960938,4],
-           [350.8948974609375,194.65139770507812,4],
-           [425.5639953613281,174.15399169921875,0],
-           [418.2435302734375,218.07699584960938,4],[367.0,262.0,5],
-           [454.84600830078125,262.0,5]]
+    seed: [
+      [367.0, 262.0, 0],
+      [418.2435302734375, 218.07699584960938, 5],
+      [440.2049865722656, 232.71800231933594, 4],
+      [478.2716369628906, 259.07177734375, 4],
+      [484.12799072265625, 270.78460693359375, 4],
+      [481.19976806640625, 289.8179016113281, 4],
+      [470.95111083984375, 305.9230041503906, 4],
+      [450.4537048339844, 311.77935791015625, 4],
+      [432.884521484375, 308.8511962890625, 4],
+      [416.77935791015625, 304.4588928222656, 4],
+      [399.2102355957031, 292.74609375, 4],
+      [378.7127685546875, 273.71282958984375, 4],
+      [369.92822265625, 262.0, 4],
+      [359.67950439453125, 237.11032104492188, 4],
+      [352.3590087890625, 218.07699584960938, 4],
+      [350.8948974609375, 194.65139770507812, 4],
+      [425.5639953613281, 174.15399169921875, 0],
+      [418.2435302734375, 218.07699584960938, 4],
+      [367.0, 262.0, 5],
+      [454.84600830078125, 262.0, 5],
+    ],
   },
   'goldenrec': {
     fullname: 'Golden Rectangle',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 8,
-    seed: [[304.0,174.0,0],[304.0,174.0,5],[304.0,156.4929656982422,4],
-           [328.07220458984375,156.4929656982422,4],
-           [328.07220458984375,174.0,4],[304.0,174.0,0],
-           [304.0,156.4929656982422,5]]
+    seed: [
+      [304.0, 174.0, 0],
+      [304.0, 174.0, 5],
+      [304.0, 156.4929656982422, 4],
+      [328.07220458984375, 156.4929656982422, 4],
+      [328.07220458984375, 174.0, 4],
+      [304.0, 174.0, 0],
+      [304.0, 156.4929656982422, 5],
+    ],
   },
   'kitwe': {
     fullname: 'Kitwe',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 3,
-    seed: [[261.0,240.0,0],[241.0,200.0,5],[261.0,160.0,0],
-           [321.0,160.0,4],[341.0,200.0,0],[321.0,240.0,4],
-           [261.0,240.0,4],[241.0,200.0,4],
-           [269.44482421875,202.2428436279297,5],[321.0,240.0,5]]
+    seed: [
+      [261.0, 240.0, 0],
+      [241.0, 200.0, 5],
+      [261.0, 160.0, 0],
+      [321.0, 160.0, 4],
+      [341.0, 200.0, 0],
+      [321.0, 240.0, 4],
+      [261.0, 240.0, 4],
+      [241.0, 200.0, 4],
+      [269.44482421875, 202.2428436279297, 5],
+      [321.0, 240.0, 5],
+    ],
   },
   'koch': {
     fullname: 'Koch Curve',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
-    seed: [[60.0,280.0,0],[200.0,280.0,0],[320.0,140.0,0],
-           [440.0,280.0,0],[580.0,280.0,0]]
+    seed: [
+      [60.0, 280.0, 0],
+      [200.0, 280.0, 0],
+      [320.0, 140.0, 0],
+      [440.0, 280.0, 0],
+      [580.0, 280.0, 0],
+    ],
   },
   'kochsmall': {
     fullname: 'Small Koch Curve',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
-    seed: [[180.5,240.5,0],[260.5,240.5,0],[320.5,160.5,0],
-           [380.5,240.5,0],[460.5,240.5,0]]
+    seed: [
+      [180.5, 240.5, 0],
+      [260.5, 240.5, 0],
+      [320.5, 160.5, 0],
+      [380.5, 240.5, 0],
+      [460.5, 240.5, 0],
+    ],
   },
   'logone': {
     fullname: 'Logone',
     thickness: 4.0,
     thicknessType: 0,
     itNumber: 3,
-    seed: [[380.0,300.0,0],[180.0,300.0,5],[180.0,200.0,4],
-           [180.0,100.0,2],[180.0,60.0,4],[280.0,60.0,4],[380.0,60.0,2],
-           [380.0,120.0,4],[380.0,220.0,2],[380.0,300.0,4],
-           [320.0,300.0,4],[220.0,300.0,2],[180.0,300.0,4],
-           [180.0,300.0,5]]
+    seed: [
+      [380.0, 300.0, 0],
+      [180.0, 300.0, 5],
+      [180.0, 200.0, 4],
+      [180.0, 100.0, 2],
+      [180.0, 60.0, 4],
+      [280.0, 60.0, 4],
+      [380.0, 60.0, 2],
+      [380.0, 120.0, 4],
+      [380.0, 220.0, 2],
+      [380.0, 300.0, 4],
+      [320.0, 300.0, 4],
+      [220.0, 300.0, 2],
+      [180.0, 300.0, 4],
+      [180.0, 300.0, 5],
+    ],
   },
   'lungs': {
     fullname: 'Human Lungs',
     thickness: 8.0,
     thicknessType: 1,
     itNumber: 8,
-    seed: [[320.0,90.0,0],[320.0,190.0,4],[250.0,200.0,0],
-           [320.0,190.0,5],[380.0,200.0,0],[320.0,190.0,5]]
+    seed: [
+      [320.0, 90.0, 0],
+      [320.0, 190.0, 4],
+      [250.0, 200.0, 0],
+      [320.0, 190.0, 5],
+      [380.0, 200.0, 0],
+      [320.0, 190.0, 5],
+    ],
   },
   'mokoulek': {
     fullname: 'Mokoulek',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 4,
-    seed: [[420.0,120.0,0],[400.0,120.0,5],[380.0,140.0,4],
-           [360.0,180.0,4],[360.0,220.0,4],[380.0,260.0,4],
-           [400.0,280.0,4],[440.0,300.0,4],[480.0,300.0,4],
-           [520.0,280.0,4],[540.0,260.0,4],[560.0,220.0,4],
-           [560.0,180.0,4],[540.0,140.0,4],[520.0,120.0,4],
-           [480.0,100.0,4],[440.0,100.0,4],[400.0,120.0,4],
-           [420.0,160.0,5],[400.0,180.0,1],[400.0,220.0,5],
-           [420.0,240.0,1],[480.0,260.0,5],[500.0,240.0,1],
-           [520.0,220.0,5],[520.0,200.0,1],[520.0,180.0,5],
-           [520.0,160.0,1],[480.0,160.0,5],[460.0,160.0,1],
-           [440.0,180.0,5],[440.0,200.0,1],[440.0,220.0,5],
-           [460.0,220.0,1],[480.0,220.0,5],[480.0,200.0,1],
-           [240.0,220.0,5],[260.0,100.0,0],[240.0,100.0,5]]
+    seed: [
+      [420.0, 120.0, 0],
+      [400.0, 120.0, 5],
+      [380.0, 140.0, 4],
+      [360.0, 180.0, 4],
+      [360.0, 220.0, 4],
+      [380.0, 260.0, 4],
+      [400.0, 280.0, 4],
+      [440.0, 300.0, 4],
+      [480.0, 300.0, 4],
+      [520.0, 280.0, 4],
+      [540.0, 260.0, 4],
+      [560.0, 220.0, 4],
+      [560.0, 180.0, 4],
+      [540.0, 140.0, 4],
+      [520.0, 120.0, 4],
+      [480.0, 100.0, 4],
+      [440.0, 100.0, 4],
+      [400.0, 120.0, 4],
+      [420.0, 160.0, 5],
+      [400.0, 180.0, 1],
+      [400.0, 220.0, 5],
+      [420.0, 240.0, 1],
+      [480.0, 260.0, 5],
+      [500.0, 240.0, 1],
+      [520.0, 220.0, 5],
+      [520.0, 200.0, 1],
+      [520.0, 180.0, 5],
+      [520.0, 160.0, 1],
+      [480.0, 160.0, 5],
+      [460.0, 160.0, 1],
+      [440.0, 180.0, 5],
+      [440.0, 200.0, 1],
+      [440.0, 220.0, 5],
+      [460.0, 220.0, 1],
+      [480.0, 220.0, 5],
+      [480.0, 200.0, 1],
+      [240.0, 220.0, 5],
+      [260.0, 100.0, 0],
+      [240.0, 100.0, 5],
+    ],
   },
   'nankani': {
     fullname: 'Nankani',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 5,
-    seed: [[421.0,101.0,0],[350.9679870605469,54.74000549316406,5],
-           [337.84600830078125,67.86199951171875,4],
-           [324.7239990234375,94.10599517822266,4],
-           [324.7239990234375,120.35000610351562,4],
-           [337.84600830078125,146.593994140625,4],
-           [350.9679870605469,159.71600341796875,4],
-           [377.2120361328125,172.8380126953125,4],
-           [403.45599365234375,172.8380126953125,4],
-           [429.70001220703125,159.71600341796875,4],
-           [442.822021484375,146.593994140625,4],
-           [455.94403076171875,120.35000610351562,4],
-           [455.94403076171875,94.10599517822266,4],
-           [442.822021484375,67.86199951171875,4],
-           [429.70001220703125,54.74000549316406,4],
-           [403.45599365234375,41.618003845214844,4],
-           [377.2120361328125,41.618003845214844,4],
-           [350.9679870605469,54.74000549316406,4],[272.0,82.0,5],
-           [263.0,170.0,0],[211.0,121.97000122070312,5],[329.0,173.0,5]]
+    seed: [
+      [421.0, 101.0, 0],
+      [350.9679870605469, 54.74000549316406, 5],
+      [337.84600830078125, 67.86199951171875, 4],
+      [324.7239990234375, 94.10599517822266, 4],
+      [324.7239990234375, 120.35000610351562, 4],
+      [337.84600830078125, 146.593994140625, 4],
+      [350.9679870605469, 159.71600341796875, 4],
+      [377.2120361328125, 172.8380126953125, 4],
+      [403.45599365234375, 172.8380126953125, 4],
+      [429.70001220703125, 159.71600341796875, 4],
+      [442.822021484375, 146.593994140625, 4],
+      [455.94403076171875, 120.35000610351562, 4],
+      [455.94403076171875, 94.10599517822266, 4],
+      [442.822021484375, 67.86199951171875, 4],
+      [429.70001220703125, 54.74000549316406, 4],
+      [403.45599365234375, 41.618003845214844, 4],
+      [377.2120361328125, 41.618003845214844, 4],
+      [350.9679870605469, 54.74000549316406, 4],
+      [272.0, 82.0, 5],
+      [263.0, 170.0, 0],
+      [211.0, 121.97000122070312, 5],
+      [329.0, 173.0, 5],
+    ],
   },
   'negative': {
     fullname: 'negative',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
-    seed: [[340.0,80.0,0],[320.0,80.0,0],[300.0,80.0,0],[280.0,80.0,0],
-           [260.0,80.0,0],[240.0,100.0,0],[240.0,120.0,0],
-           [240.0,140.0,0],[240.0,160.0,0],[240.0,180.0,0],
-           [240.0,200.0,0],[240.0,220.0,0],[260.0,240.0,0],
-           [280.0,240.0,0],[300.0,240.0,0],[320.0,240.0,0],
-           [340.0,240.0,0]]
+    seed: [
+      [340.0, 80.0, 0],
+      [320.0, 80.0, 0],
+      [300.0, 80.0, 0],
+      [280.0, 80.0, 0],
+      [260.0, 80.0, 0],
+      [240.0, 100.0, 0],
+      [240.0, 120.0, 0],
+      [240.0, 140.0, 0],
+      [240.0, 160.0, 0],
+      [240.0, 180.0, 0],
+      [240.0, 200.0, 0],
+      [240.0, 220.0, 0],
+      [260.0, 240.0, 0],
+      [280.0, 240.0, 0],
+      [300.0, 240.0, 0],
+      [320.0, 240.0, 0],
+      [340.0, 240.0, 0],
+    ],
   },
   'neuron': {
     fullname: 'Neuron',
     thickness: 5.0,
     thicknessType: 1,
     itNumber: 3,
-    seed: [[308.0,269.0,0],[282.0,227.0,4],[245.0,153.0,4],
-           [195.0,154.0,0],[314.0,173.0,5],[320.0,110.0,0],
-           [266.0,194.0,5],[266.0,144.0,0],[282.0,227.0,5],
-           [316.0,174.0,4],[369.0,178.0,0],[192.0,157.0,5],
-           [309.0,271.0,5],[307.0,278.0,4],[312.0,281.0,4],
-           [313.0,276.0,4],[307.0,269.0,4],[264.0,190.0,5],
-           [213.0,243.0,0],[242.0,152.0,5],[202.0,108.0,0],
-           [142.0,107.0,5],[242.0,147.0,5]]
+    seed: [
+      [308.0, 269.0, 0],
+      [282.0, 227.0, 4],
+      [245.0, 153.0, 4],
+      [195.0, 154.0, 0],
+      [314.0, 173.0, 5],
+      [320.0, 110.0, 0],
+      [266.0, 194.0, 5],
+      [266.0, 144.0, 0],
+      [282.0, 227.0, 5],
+      [316.0, 174.0, 4],
+      [369.0, 178.0, 0],
+      [192.0, 157.0, 5],
+      [309.0, 271.0, 5],
+      [307.0, 278.0, 4],
+      [312.0, 281.0, 4],
+      [313.0, 276.0, 4],
+      [307.0, 269.0, 4],
+      [264.0, 190.0, 5],
+      [213.0, 243.0, 0],
+      [242.0, 152.0, 5],
+      [202.0, 108.0, 0],
+      [142.0, 107.0, 5],
+      [242.0, 147.0, 5],
+    ],
   },
   'positive': {
     fullname: 'positive',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 1,
-    seed: [[320.0,100.0,0],[220.0,160.0,0],[320.0,220.0,0]]
+    seed: [
+      [320.0, 100.0, 0],
+      [220.0, 160.0, 0],
+      [320.0, 220.0, 0],
+    ],
   },
   'queenanne': {
-    fullname: "Queen Anne's Lace",
+    fullname: 'Queen Anne\'s Lace',
     thickness: 2.0,
     thicknessType: 1,
     itNumber: 5,
-    seed: [[260.0,320.0,0],[270.0,310.0,4],[280.0,290.0,4],
-           [280.0,260.0,4],[270.0,240.0,4],[260.0,220.0,4],
-           [220.0,200.0,1],[170.0,170.0,5],[190.0,160.0,5],
-           [260.0,220.0,5],[240.0,180.0,1],[360.0,140.0,5],
-           [260.0,220.0,5],[280.0,180.0,0],[140.0,130.0,5],
-           [180.0,280.0,5],[180.0,220.0,5],[260.0,220.0,5],
-           [300.0,200.0,0],[306.510009765625,228.70999145507812,5],
-           [260.0,220.0,5]]
+    seed: [
+      [260.0, 320.0, 0],
+      [270.0, 310.0, 4],
+      [280.0, 290.0, 4],
+      [280.0, 260.0, 4],
+      [270.0, 240.0, 4],
+      [260.0, 220.0, 4],
+      [220.0, 200.0, 1],
+      [170.0, 170.0, 5],
+      [190.0, 160.0, 5],
+      [260.0, 220.0, 5],
+      [240.0, 180.0, 1],
+      [360.0, 140.0, 5],
+      [260.0, 220.0, 5],
+      [280.0, 180.0, 0],
+      [140.0, 130.0, 5],
+      [180.0, 280.0, 5],
+      [180.0, 220.0, 5],
+      [260.0, 220.0, 5],
+      [300.0, 200.0, 0],
+      [306.510009765625, 228.70999145507812, 5],
+      [260.0, 220.0, 5],
+    ],
   },
   'riverbasin': {
     fullname: 'River Basin',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 8,
-    seed: [[76.0,260.0,0],[76.0,260.0,5],[270.0,260.0,0],
-           [288.2153015136719,24.205242156982422,0],[300.0,260.0,0],
-           [547.5895385742188,260.0,0],[547.5895385742188,260.0,5]]
+    seed: [
+      [76.0, 260.0, 0],
+      [76.0, 260.0, 5],
+      [270.0, 260.0, 0],
+      [288.2153015136719, 24.205242156982422, 0],
+      [300.0, 260.0, 0],
+      [547.5895385742188, 260.0, 0],
+      [547.5895385742188, 260.0, 5],
+    ],
   },
   'sierpinski': {
     fullname: 'Sierpinski Triangle',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 5,
-    seed: [[398.0,260.0,0],[200.0,260.0,5],[398.0,260.0,4],
-           [299.989990234375,81.80000305175781,4],
-           [348.5,170.89999389648438,5],[249.5,170.89999389648438,0],
-           [299.0,260.0,4],[348.5,170.89999389648438,4],[398.0,260.0,5],
-           [299.0,260.0,0],[299.0,260.0,5],[200.0,260.0,0],
-           [200.0,260.0,5],[299.989990234375,81.80000305175781,4],
-           [200.0,260.0,5]]
+    seed: [
+      [398.0, 260.0, 0],
+      [200.0, 260.0, 5],
+      [398.0, 260.0, 4],
+      [299.989990234375, 81.80000305175781, 4],
+      [348.5, 170.89999389648438, 5],
+      [249.5, 170.89999389648438, 0],
+      [299.0, 260.0, 4],
+      [348.5, 170.89999389648438, 4],
+      [398.0, 260.0, 5],
+      [299.0, 260.0, 0],
+      [299.0, 260.0, 5],
+      [200.0, 260.0, 0],
+      [200.0, 260.0, 5],
+      [299.989990234375, 81.80000305175781, 4],
+      [200.0, 260.0, 5],
+    ],
   },
   'sprout': {
     fullname: 'Sprout',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 9,
-    seed: [[260.0,320.0,0],[260.0,180.0,4],[260.0,180.0,5],
-           [260.0,180.0,0],[340.0,120.0,0],[320.0,180.0,5],
-           [260.0,180.0,5]]
+    seed: [
+      [260.0, 320.0, 0],
+      [260.0, 180.0, 4],
+      [260.0, 180.0, 5],
+      [260.0, 180.0, 0],
+      [340.0, 120.0, 0],
+      [320.0, 180.0, 5],
+      [260.0, 180.0, 5],
+    ],
   },
   'turbulence': {
     fullname: 'Turbulence',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 9,
-    seed: [[293.0,99.0,0],[356.0,107.0999984741211,5],
-           [235.12611389160156,87.42520141601562,0],
-           [177.2521514892578,99.0,5],
-           [154.1025848388672,133.72434997558594,5],
-           [177.2521514892578,168.44869995117188,0]]
+    seed: [
+      [293.0, 99.0, 0],
+      [356.0, 107.0999984741211, 5],
+      [235.12611389160156, 87.42520141601562, 0],
+      [177.2521514892578, 99.0, 5],
+      [154.1025848388672, 133.72434997558594, 5],
+      [177.2521514892578, 168.44869995117188, 0],
+    ],
   },
   'villi': {
     fullname: 'Intestinal Villi',
     thickness: 2.0,
     thicknessType: 0,
     itNumber: 2,
-    seed: [[80.0,180.0,0],[120.0,180.0,0],[150.0,160.0,0],
-           [160.0,120.0,0],[170.0,80.0,0],[180.0,60.0,0],[200.0,60.0,0],
-           [220.0,70.0,0],[230.0,90.0,0],[230.0,110.0,0],[240.0,140.0,0],
-           [250.0,160.0,0],[270.0,180.0,0],[300.0,180.0,0],
-           [310.0,160.0,0],[310.0,130.0,0],[320.0,100.0,0],
-           [340.0,90.0,0],[360.0,100.0,0],[370.0,120.0,0],
-           [380.0,140.0,0],[390.0,160.0,0],[400.0,170.0,0],
-           [430.0,180.0,0],[460.0,170.0,0],[470.0,130.0,0],
-           [480.0,110.0,0],[490.0,110.0,0],[500.0,120.0,0],
-           [510.0,140.0,0],[510.0,160.0,0],[520.0,170.0,0],
-           [540.0,180.0,0]]
+    seed: [
+      [80.0, 180.0, 0],
+      [120.0, 180.0, 0],
+      [150.0, 160.0, 0],
+      [160.0, 120.0, 0],
+      [170.0, 80.0, 0],
+      [180.0, 60.0, 0],
+      [200.0, 60.0, 0],
+      [220.0, 70.0, 0],
+      [230.0, 90.0, 0],
+      [230.0, 110.0, 0],
+      [240.0, 140.0, 0],
+      [250.0, 160.0, 0],
+      [270.0, 180.0, 0],
+      [300.0, 180.0, 0],
+      [310.0, 160.0, 0],
+      [310.0, 130.0, 0],
+      [320.0, 100.0, 0],
+      [340.0, 90.0, 0],
+      [360.0, 100.0, 0],
+      [370.0, 120.0, 0],
+      [380.0, 140.0, 0],
+      [390.0, 160.0, 0],
+      [400.0, 170.0, 0],
+      [430.0, 180.0, 0],
+      [460.0, 170.0, 0],
+      [470.0, 130.0, 0],
+      [480.0, 110.0, 0],
+      [490.0, 110.0, 0],
+      [500.0, 120.0, 0],
+      [510.0, 140.0, 0],
+      [510.0, 160.0, 0],
+      [520.0, 170.0, 0],
+      [540.0, 180.0, 0],
+    ],
   },
   'sharkfin': {
     fullname: 'Shark Fin',
-    seed: [[200.0,260.0,0],[280.0,260.0,0],[380.0,200.0,4],
-           [380.0,260.0,4],[460.0,260.0,4]]
-  }
+    seed: [
+      [200.0, 260.0, 0],
+      [280.0, 260.0, 0],
+      [380.0, 200.0, 4],
+      [380.0, 260.0, 4],
+      [460.0, 260.0, 4],
+    ],
+  },
 };
 
-
+/** Class for switching between modes
+@param {div} mainDiv - The div in which you're drawing
+@param {div} toolNum - The number of said division
+@param {int} askWidth - The div width requested
+@param {int} askHeight - The div height requested
+*/
 function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
   this.mainDiv = mainDiv;
   this.toolNum = toolNum;
@@ -1289,13 +1658,13 @@ function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
 
 
   this.canvasDiv = document.createElement('div');
-  this.canvasDiv.id = 'ft-canvases-'+toolNum;
+  this.canvasDiv.id = 'ft-canvases-' + toolNum;
   this.canvasDiv.style.position = 'relative';
   this.canvasDiv.style.height = (this.height + 4) + 'px';
   mainDiv.appendChild(this.canvasDiv);
 
   this.modeSelDiv = document.createElement('div');
-  this.modeSelDiv.id = 'ft-modesel-'+toolNum;
+  this.modeSelDiv.id = 'ft-modesel-' + toolNum;
   this.modeSelDiv.style.display = 'inline-block';
   this.modeSelDiv.style['vertical-align'] = 'top';
   this.modeSelDiv.style.paddingRight = '10px';
@@ -1304,7 +1673,7 @@ function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
   mainDiv.appendChild(this.modeSelDiv);
 
   this.ctrlPanelDiv = document.createElement('div');
-  this.ctrlPanelDiv.id = 'ft-ctrlpanel-'+toolNum;
+  this.ctrlPanelDiv.id = 'ft-ctrlpanel-' + toolNum;
   this.ctrlPanelDiv.style.display = 'inline';
   mainDiv.appendChild(this.ctrlPanelDiv);
 
@@ -1327,8 +1696,9 @@ function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
     seedlist = mainDiv.dataset['seedlist'];
   }
   let stdseeds = seedlist.split(',');
-  for (let i=0; i<stdseeds.length; i++)
+  for (let i = 0; i < stdseeds.length; i++) {
     this.editorDiv.addStdSeed(stdseeds[i]);
+  }
 
   if (mainDiv.dataset['seed'] != undefined) {
     this.editorDiv.setSeedByName(mainDiv.dataset['seed']);
@@ -1336,7 +1706,7 @@ function MultiModeTool(mainDiv, toolNum, askWidth, askHeight) {
 
   let mode = 1;
   if ((mainDiv.dataset['mode'] != undefined) &&
-      (mainDiv.dataset['mode'].toLowerCase() == 'draw')) {
+    (mainDiv.dataset['mode'].toLowerCase() == 'draw')) {
     mode = 0;
   }
 
@@ -1356,7 +1726,7 @@ MultiModeTool.prototype.addMode = function(title, modeObj) {
   this.ctrlPanelDiv.appendChild(modeObj.getCtrls());
   this.modes.push(modeObj);
   this.modeButtons.push(button);
-}
+};
 
 MultiModeTool.prototype.setMode = function(modeNum) {
   if (modeNum != this.currentMode) {
@@ -1372,15 +1742,18 @@ MultiModeTool.prototype.setMode = function(modeNum) {
 
 let fractaltoolInstances = null;
 
+/** Starts the fractal tool on load. */
 function fractalToolInit() {
   let tools = document.getElementsByClassName('fractaltool');
   fractaltoolInstances = [];
-  for (let i=0; i<tools.length; i++) {
-    fractaltoolInstances[i] = new MultiModeTool(tools[i], i+1, 800, 600);
+  for (let i = 0; i < tools.length; i++) {
+    fractaltoolInstances[i] = new MultiModeTool(tools[i], i + 1, 800, 600);
   }
 }
 
-window.addEventListener('load', function(evt) { fractalToolInit(); });
+window.addEventListener('load', function(evt) {
+  fractalToolInit();
+});
 
 // Local Variables:
 // mode: js
